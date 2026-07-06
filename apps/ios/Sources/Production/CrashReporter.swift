@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 final class CrashReporter {
     static let shared = CrashReporter()
     
