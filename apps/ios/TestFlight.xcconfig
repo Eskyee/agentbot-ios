@@ -1,0 +1,21 @@
+// Agentbot App Store / TestFlight signing configuration.
+// Use this for archive builds targeting App Store Connect.
+
+#include "Config/Version.xcconfig"
+
+AGENTBOT_CODE_SIGN_STYLE = Manual
+AGENTBOT_CODE_SIGN_IDENTITY = Apple Distribution
+AGENTBOT_CODE_SIGN_ENTITLEMENTS = Sources/Agentbot.entitlements
+AGENTBOT_DEVELOPMENT_TEAM = YOUR_TEAM_ID
+
+AGENTBOT_APP_BUNDLE_ID = sh.agentbot.app
+AGENTBOT_SHARE_BUNDLE_ID = sh.agentbot.app.share
+AGENTBOT_APP_GROUP_ID = group.sh.agentbot.app.shared
+AGENTBOT_WATCH_APP_BUNDLE_ID = sh.agentbot.app.watchkitapp
+AGENTBOT_ACTIVITY_WIDGET_BUNDLE_ID = sh.agentbot.app.activitywidget
+AGENTBOT_APNS_ENTITLEMENT_ENVIRONMENT = production
+
+AGENTBOT_APP_PROFILE = sh.agentbot.app AppStore
+AGENTBOT_SHARE_PROFILE = sh.agentbot.app.share AppStore
+AGENTBOT_ACTIVITY_WIDGET_PROFILE = sh.agentbot.app.activitywidget AppStore
+AGENTBOT_WATCH_APP_PROFILE = sh.agentbot.app.watchkitapp AppStore
