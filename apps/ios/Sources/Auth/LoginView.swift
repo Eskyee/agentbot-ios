@@ -1,5 +1,6 @@
 import SwiftUI
 import AuthenticationServices
+import AVFoundation
 
 struct LoginView: View {
     @StateObject private var auth = AuthManager.shared
