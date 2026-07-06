@@ -1,4 +1,5 @@
 import SwiftUI
+import AuthenticationServices
 
 struct LoginView: View {
     @StateObject private var auth = AuthManager.shared
@@ -75,6 +76,40 @@ struct LoginView: View {
                             : "Don't have an account? Sign Up")
                             .foregroundStyle(AgentbotBrand.accent)
                     }
+                    
+                    Divider()
+                        .padding(.horizontal, 32)
+                    
+                    HStack(spacing: 16) {
+                        Button {
+                            Task { await googleSignIn() }
+                        } label: {
+                            HStack {
+                                Image(systemName: "g.circle.fill")
+                                Text("Google")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .disabled(isLoading)
+                        
+                        Button {
+                            Task { await appleSignIn() }
+                        } label: {
+                            HStack {
+                                Image(systemName: "apple.logo")
+                                Text("Apple")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                        .disabled(isLoading)
+                    }
+                    .padding(.horizontal, 32)
 
                     Spacer()
                 }
@@ -102,6 +137,31 @@ struct LoginView: View {
             errorMessage = error.localizedDescription
         }
 
+        isLoading = false
+    }
+    
+    private func googleSignIn() async {
+        isLoading = true
+        errorMessage = nil
+        do {
+            let response = try await GoogleAuthManager.shared.signIn()
+            auth.token = response.token
+            auth.currentUser = response.user
+            auth.isAuthenticated = true
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isLoading = false
+    }
+    
+    private func appleSignIn() async {
+        isLoading = true
+        errorMessage = nil
+        let controller = ASAuthorizationController(authorizationRequests: [
+            ASAuthorizationAppleIDProvider().createRequest()
+        ])
+        controller.delegate = AppleAuthManager.shared
+        controller.performRequests()
         isLoading = false
     }
 }
