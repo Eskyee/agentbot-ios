@@ -7,10 +7,10 @@ AGENTBOT_DEVELOPMENT_TEAM = $(AGENTBOT_IOS_SELECTED_TEAM)
 AGENTBOT_CODE_SIGN_STYLE = Automatic
 AGENTBOT_CODE_SIGN_IDENTITY = Apple Development
 AGENTBOT_CODE_SIGN_ENTITLEMENTS = Sources/Agentbot.entitlements
-AGENTBOT_APP_BUNDLE_ID = sh.agentbot.app
-AGENTBOT_APP_GROUP_ID = group.sh.agentbot.app.shared
-AGENTBOT_WATCH_APP_BUNDLE_ID = sh.agentbot.app.watchkitapp
-AGENTBOT_ACTIVITY_WIDGET_BUNDLE_ID = sh.agentbot.app.activitywidget
+AGENTBOT_APP_BUNDLE_ID = com.agentbot.app
+AGENTBOT_APP_GROUP_ID = group.com.agentbot.app.shared
+AGENTBOT_WATCH_APP_BUNDLE_ID = com.agentbot.app.watchkitapp
+AGENTBOT_ACTIVITY_WIDGET_BUNDLE_ID = com.agentbot.app.activitywidget
 AGENTBOT_ACTIVITY_WIDGET_PROFILE =
 AGENTBOT_WATCH_APP_PROFILE =
 

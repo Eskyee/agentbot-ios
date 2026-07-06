@@ -9,11 +9,11 @@ AGENTBOT_CODE_SIGN_IDENTITY = Apple Development
 AGENTBOT_CODE_SIGN_ENTITLEMENTS = Sources/Agentbot.entitlements
 AGENTBOT_DEVELOPMENT_TEAM = U8C49P573P
 
-AGENTBOT_APP_BUNDLE_ID = sh.agentbot.app
-AGENTBOT_SHARE_BUNDLE_ID = sh.agentbot.app.share
-AGENTBOT_APP_GROUP_ID = group.sh.agentbot.app.shared
-AGENTBOT_WATCH_APP_BUNDLE_ID = sh.agentbot.app.watchkitapp
-AGENTBOT_ACTIVITY_WIDGET_BUNDLE_ID = sh.agentbot.app.activitywidget
+AGENTBOT_APP_BUNDLE_ID = com.agentbot.app
+AGENTBOT_SHARE_BUNDLE_ID = com.agentbot.app.share
+AGENTBOT_APP_GROUP_ID = group.com.agentbot.app.shared
+AGENTBOT_WATCH_APP_BUNDLE_ID = com.agentbot.app.watchkitapp
+AGENTBOT_ACTIVITY_WIDGET_BUNDLE_ID = com.agentbot.app.activitywidget
 AGENTBOT_APNS_ENTITLEMENT_ENVIRONMENT = development
 
 AGENTBOT_APP_PROFILE =
