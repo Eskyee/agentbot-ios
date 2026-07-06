@@ -22,8 +22,10 @@ struct LiveLogsView: View {
         }
     }
 
-    enum LogLevel: String, Codable, CaseIterable {
+    enum LogLevel: String, Codable, CaseIterable, Identifiable {
         case debug, info, warn, error, all
+        
+        var id: String { rawValue }
 
         var color: Color {
             switch self {

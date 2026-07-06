@@ -72,7 +72,7 @@ private struct AgentMarketplaceCard: View {
             HStack {
                 Image(systemName: "brain.head.profile.fill")
                     .font(.title2)
-                    .foregroundStyle(.accent)
+                    .foregroundStyle(AgentbotBrand.accent)
                 VStack(alignment: .leading) {
                     Text(agent.name).font(.headline)
                     Text(agent.author).font(.caption).foregroundStyle(.secondary)

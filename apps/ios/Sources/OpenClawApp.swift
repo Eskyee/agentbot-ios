@@ -652,10 +652,8 @@ struct OpenClawApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootTabs()
-                .tint(OpenClawBrand.accent)
+            AgentbotRootView()
                 .preferredColorScheme(self.appearancePreference.colorScheme)
-                .environment(self.appModel)
                 .environment(self.appModel.voiceWake)
                 .environment(self.gatewayController)
                 .task {
@@ -708,7 +706,7 @@ struct OpenClawApp: App {
             .flatMap(\.windows)
             .forEach { window in
                 window.overrideUserInterfaceStyle = style
-                window.tintColor = OpenClawBrand.uiAccent
+                window.tintColor = AgentbotBrand.uiAccent
             }
     }
 }
