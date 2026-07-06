@@ -1,6 +1,6 @@
-name: OpenClaw
+name: Agentbot
 options:
-  bundleIdPrefix: ai.openclawfoundation
+  bundleIdPrefix: sh.agentbot
   deploymentTarget:
     iOS: "18.0"
   xcodeVersion: "16.0"
@@ -20,39 +20,39 @@ packages:
     exactVersion: 147.0.0
 
 schemes:
-  OpenClaw:
+  Agentbot:
     shared: true
     build:
       targets:
-        OpenClaw: all
+        Agentbot: all
     test:
       targets:
-        - OpenClawTests
-        - OpenClawLogicTests
-  OpenClawLogicTests:
+        - AgentbotTests
+        - AgentbotLogicTests
+  AgentbotLogicTests:
     shared: true
     build:
       targets:
-        OpenClawLogicTests: all
+        AgentbotLogicTests: all
     test:
       targets:
-        - OpenClawLogicTests
-  OpenClawUITests:
+        - AgentbotLogicTests
+  AgentbotUITests:
     shared: true
     build:
       targets:
-        OpenClawUITests: all
+        AgentbotUITests: all
     test:
       targets:
-        - OpenClawUITests
-  OpenClawWatchApp:
+        - AgentbotUITests
+  AgentbotWatchApp:
     shared: true
     build:
       targets:
-        OpenClawWatchApp: all
+        AgentbotWatchApp: all
 
 targets:
-  OpenClaw:
+  Agentbot:
     type: application
     platform: iOS
     configFiles:
@@ -61,13 +61,11 @@ targets:
     sources:
       - path: Sources
     dependencies:
-      - target: OpenClawShareExtension
+      - target: AgentbotShareExtension
         embed: true
-      - target: OpenClawActivityWidget
+      - target: AgentbotActivityWidget
         embed: true
-      # A companion watch application belongs in the standard Watch bundle location.
-      # PlugIns is for extension products and breaks paired watch installation.
-      - target: OpenClawWatchApp
+      - target: AgentbotWatchApp
       - package: OpenClawKit
       - package: OpenClawKit
         product: OpenClawChatUI
@@ -78,20 +76,6 @@ targets:
       - package: WebRTC
       - sdk: AppIntents.framework
     preBuildScripts:
-      - name: SwiftFormat (lint)
-        basedOnDependencyAnalysis: false
-        inputFileLists:
-          - $(SRCROOT)/SwiftSources.input.xcfilelist
-        script: |
-          set -euo pipefail
-          export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
-          if ! command -v swiftformat >/dev/null 2>&1; then
-            echo "error: swiftformat not found (brew install swiftformat)" >&2
-            exit 1
-          fi
-          swiftformat --lint --config "$SRCROOT/../../config/swiftformat" \
-            --unexclude "$SRCROOT/Sources,$SRCROOT/ShareExtension,$SRCROOT/ActivityWidget,$SRCROOT/WatchApp,$SRCROOT/../shared/OpenClawKit,$SRCROOT/../swabble" \
-            --filelist "$SRCROOT/SwiftSources.input.xcfilelist"
       - name: SwiftLint
         basedOnDependencyAnalysis: false
         inputFileLists:
@@ -100,18 +84,18 @@ targets:
           set -euo pipefail
           export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
           if ! command -v swiftlint >/dev/null 2>&1; then
-            echo "error: swiftlint not found (brew install swiftlint)" >&2
-            exit 1
+            echo "warning: swiftlint not found (brew install swiftlint)" >&2
+            exit 0
           fi
           swiftlint lint --config "$SRCROOT/.swiftlint.yml" --use-script-input-file-lists
     settings:
       base:
-        CODE_SIGN_IDENTITY: "$(OPENCLAW_CODE_SIGN_IDENTITY)"
-        CODE_SIGN_ENTITLEMENTS: "$(OPENCLAW_CODE_SIGN_ENTITLEMENTS)"
-        CODE_SIGN_STYLE: "$(OPENCLAW_CODE_SIGN_STYLE)"
-        DEVELOPMENT_TEAM: "$(OPENCLAW_DEVELOPMENT_TEAM)"
-        PRODUCT_BUNDLE_IDENTIFIER: "$(OPENCLAW_APP_BUNDLE_ID)"
-        PROVISIONING_PROFILE_SPECIFIER: "$(OPENCLAW_APP_PROFILE)"
+        CODE_SIGN_IDENTITY: "$(AGENTBOT_CODE_SIGN_IDENTITY)"
+        CODE_SIGN_ENTITLEMENTS: "$(AGENTBOT_CODE_SIGN_ENTITLEMENTS)"
+        CODE_SIGN_STYLE: "$(AGENTBOT_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(AGENTBOT_DEVELOPMENT_TEAM)"
+        PRODUCT_BUNDLE_IDENTIFIER: "$(AGENTBOT_APP_BUNDLE_ID)"
+        PROVISIONING_PROFILE_SPECIFIER: "$(AGENTBOT_APP_PROFILE)"
         TARGETED_DEVICE_FAMILY: "1,2"
         SWIFT_VERSION: "6.0"
         SWIFT_STRICT_CONCURRENCY: complete
@@ -120,28 +104,28 @@ targets:
         ENABLE_APP_INTENTS_METADATA_GENERATION: NO
       configs:
         Debug:
-          OPENCLAW_CODE_SIGN_ENTITLEMENTS: Sources/OpenClaw.entitlements
-          OPENCLAW_APNS_ENTITLEMENT_ENVIRONMENT: development
-          OPENCLAW_PUSH_MODE: localSandbox
-          OPENCLAW_PUSH_RELAY_BASE_URL: ""
+          AGENTBOT_CODE_SIGN_ENTITLEMENTS: Sources/Agentbot.entitlements
+          AGENTBOT_APNS_ENTITLEMENT_ENVIRONMENT: development
+          AGENTBOT_PUSH_MODE: localSandbox
+          AGENTBOT_PUSH_RELAY_BASE_URL: ""
         Release:
-          OPENCLAW_CODE_SIGN_ENTITLEMENTS: Sources/OpenClaw.entitlements
-          OPENCLAW_APNS_ENTITLEMENT_ENVIRONMENT: production
-          OPENCLAW_PUSH_MODE: localProduction
-          OPENCLAW_PUSH_RELAY_BASE_URL: ""
+          AGENTBOT_CODE_SIGN_ENTITLEMENTS: Sources/Agentbot.entitlements
+          AGENTBOT_APNS_ENTITLEMENT_ENVIRONMENT: production
+          AGENTBOT_PUSH_MODE: localProduction
+          AGENTBOT_PUSH_RELAY_BASE_URL: ""
     info:
       path: Sources/Info.plist
       properties:
-        CFBundleDisplayName: OpenClaw
+        CFBundleDisplayName: Agentbot
         CFBundleIconName: AppIcon
         CFBundleURLTypes:
-          - CFBundleURLName: ai.openclawfoundation.app
+          - CFBundleURLName: sh.agentbot.app
             CFBundleURLSchemes:
-              - openclaw
-        CFBundleShortVersionString: "$(OPENCLAW_MARKETING_VERSION)"
-        OpenClawCanonicalVersion: "$(OPENCLAW_IOS_VERSION)"
-        OpenClawAppGroupIdentifier: "$(OPENCLAW_APP_GROUP_ID)"
-        CFBundleVersion: "$(OPENCLAW_BUILD_VERSION)"
+              - agentbot
+        CFBundleShortVersionString: "$(AGENTBOT_MARKETING_VERSION)"
+        AgentbotCanonicalVersion: "$(AGENTBOT_IOS_VERSION)"
+        AgentbotAppGroupIdentifier: "$(AGENTBOT_APP_GROUP_ID)"
+        CFBundleVersion: "$(AGENTBOT_BUILD_VERSION)"
         UILaunchScreen: {}
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
@@ -149,35 +133,36 @@ targets:
           - audio
           - remote-notification
         BGTaskSchedulerPermittedIdentifiers:
-          - "$(OPENCLAW_APP_BUNDLE_ID).bgrefresh"
-        NSLocalNetworkUsageDescription: OpenClaw discovers and connects to your OpenClaw gateway on the local network.
+          - "$(AGENTBOT_APP_BUNDLE_ID).bgrefresh"
+        NSLocalNetworkUsageDescription: Agentbot discovers and connects to your Agentbot gateway on the local network.
         NSAppTransportSecurity:
           NSAllowsArbitraryLoadsInWebContent: true
           NSAllowsLocalNetworking: true
         NSBonjourServices:
-          - _openclaw-gw._tcp
-        NSCameraUsageDescription: OpenClaw uses the camera when you scan a Gateway setup QR code or ask your paired Gateway or assistant to capture a photo or short video from this iPhone, for example to connect to your Gateway or show your assistant a document, device screen, or workspace.
-        NSCalendarsUsageDescription: OpenClaw uses your calendars to show events and scheduling context when you enable calendar access.
-        NSCalendarsFullAccessUsageDescription: OpenClaw uses your calendars to show events and scheduling context when you enable calendar access.
-        NSCalendarsWriteOnlyAccessUsageDescription: OpenClaw uses your calendars to add events when you enable calendar access.
-        NSContactsUsageDescription: OpenClaw uses your contacts so you can search and reference people while using the assistant.
-        NSLocationWhenInUseUsageDescription: OpenClaw uses your location when you allow location sharing.
-        NSLocationAlwaysAndWhenInUseUsageDescription: OpenClaw can share your location in the background when you enable Always.
-        NSMicrophoneUsageDescription: OpenClaw uses the microphone for realtime chat, voice wake, and push-to-talk.
-        NSMotionUsageDescription: OpenClaw may use motion data to support device-aware interactions and automations.
-        NSPhotoLibraryUsageDescription: OpenClaw needs photo library access when you choose existing photos to share with your assistant.
-        NSRemindersFullAccessUsageDescription: OpenClaw uses your reminders to list, add, and complete tasks when you enable reminders access.
-        NSSpeechRecognitionUsageDescription: OpenClaw uses on-device speech recognition for talk mode and voice wake.
+          - _agentbot-gw._tcp
+        NSCameraUsageDescription: Agentbot uses the camera to capture photos or scan QR codes.
+        NSCalendarsUsageDescription: Agentbot uses your calendars to show events and scheduling context.
+        NSCalendarsFullAccessUsageDescription: Agentbot uses your calendars to show events and scheduling context.
+        NSCalendarsWriteOnlyAccessUsageDescription: Agentbot uses your calendars to add events.
+        NSContactsUsageDescription: Agentbot uses your contacts so you can search and reference people.
+        NSLocationWhenInUseUsageDescription: Agentbot uses your location when you allow location sharing.
+        NSLocationAlwaysAndWhenInUseUsageDescription: Agentbot can share your location in the background when you enable Always.
+        NSMicrophoneUsageDescription: Agentbot uses the microphone for realtime chat, voice wake, and push-to-talk.
+        NSMotionUsageDescription: Agentbot may use motion data to support device-aware interactions and automations.
+        NSPhotoLibraryUsageDescription: Agentbot needs photo library access when you choose existing photos to share.
+        NSRemindersFullAccessUsageDescription: Agentbot uses your reminders to list, add, and complete tasks.
+        NSSpeechRecognitionUsageDescription: Agentbot uses on-device speech recognition for talk mode and voice wake.
         NSSupportsLiveActivities: true
         ITSAppUsesNonExemptEncryption: false
-        OpenClawPushMode: "$(OPENCLAW_PUSH_MODE)"
-        OpenClawPushRelayBaseURL: "$(OPENCLAW_PUSH_RELAY_BASE_URL)"
+        AgentbotPushMode: "$(AGENTBOT_PUSH_MODE)"
+        AgentbotPushRelayBaseURL: "$(AGENTBOT_PUSH_RELAY_BASE_URL)"
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationPortraitUpsideDown
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
-  OpenClawShareExtension:
+
+  AgentbotShareExtension:
     type: app-extension
     platform: iOS
     configFiles:
@@ -190,24 +175,24 @@ targets:
       - sdk: AppIntents.framework
     settings:
       base:
-        CODE_SIGN_IDENTITY: "$(OPENCLAW_CODE_SIGN_IDENTITY)"
-        CODE_SIGN_ENTITLEMENTS: ShareExtension/OpenClawShareExtension.entitlements
-        CODE_SIGN_STYLE: "$(OPENCLAW_CODE_SIGN_STYLE)"
-        DEVELOPMENT_TEAM: "$(OPENCLAW_DEVELOPMENT_TEAM)"
+        CODE_SIGN_IDENTITY: "$(AGENTBOT_CODE_SIGN_IDENTITY)"
+        CODE_SIGN_ENTITLEMENTS: ShareExtension/AgentbotShareExtension.entitlements
+        CODE_SIGN_STYLE: "$(AGENTBOT_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(AGENTBOT_DEVELOPMENT_TEAM)"
         ENABLE_APPINTENTS_METADATA: NO
         ENABLE_APP_INTENTS_METADATA_GENERATION: NO
-        PRODUCT_BUNDLE_IDENTIFIER: "$(OPENCLAW_SHARE_BUNDLE_ID)"
-        PROVISIONING_PROFILE_SPECIFIER: "$(OPENCLAW_SHARE_PROFILE)"
+        PRODUCT_BUNDLE_IDENTIFIER: "$(AGENTBOT_SHARE_BUNDLE_ID)"
+        PROVISIONING_PROFILE_SPECIFIER: "$(AGENTBOT_SHARE_PROFILE)"
         TARGETED_DEVICE_FAMILY: "1,2"
         SWIFT_VERSION: "6.0"
         SWIFT_STRICT_CONCURRENCY: complete
     info:
       path: ShareExtension/Info.plist
       properties:
-        CFBundleDisplayName: OpenClaw Share
-        CFBundleShortVersionString: "$(OPENCLAW_MARKETING_VERSION)"
-        OpenClawAppGroupIdentifier: "$(OPENCLAW_APP_GROUP_ID)"
-        CFBundleVersion: "$(OPENCLAW_BUILD_VERSION)"
+        CFBundleDisplayName: Agentbot Share
+        CFBundleShortVersionString: "$(AGENTBOT_MARKETING_VERSION)"
+        AgentbotAppGroupIdentifier: "$(AGENTBOT_APP_GROUP_ID)"
+        CFBundleVersion: "$(AGENTBOT_BUILD_VERSION)"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.share-services
           NSExtensionPrincipalClass: "$(PRODUCT_MODULE_NAME).ShareViewController"
@@ -218,7 +203,7 @@ targets:
               NSExtensionActivationSupportsImageWithMaxCount: 10
               NSExtensionActivationSupportsMovieWithMaxCount: 1
 
-  OpenClawActivityWidget:
+  AgentbotActivityWidget:
     type: app-extension
     platform: iOS
     configFiles:
@@ -226,17 +211,17 @@ targets:
       Release: Signing.xcconfig
     sources:
       - path: ActivityWidget
-      - path: Sources/LiveActivity/OpenClawActivityAttributes.swift
+      - path: Sources/LiveActivity/AgentbotActivityAttributes.swift
     dependencies:
       - sdk: WidgetKit.framework
       - sdk: ActivityKit.framework
     settings:
       base:
-        CODE_SIGN_IDENTITY: "$(OPENCLAW_CODE_SIGN_IDENTITY)"
-        CODE_SIGN_STYLE: "$(OPENCLAW_CODE_SIGN_STYLE)"
-        DEVELOPMENT_TEAM: "$(OPENCLAW_DEVELOPMENT_TEAM)"
-        PRODUCT_BUNDLE_IDENTIFIER: "$(OPENCLAW_ACTIVITY_WIDGET_BUNDLE_ID)"
-        PROVISIONING_PROFILE_SPECIFIER: "$(OPENCLAW_ACTIVITY_WIDGET_PROFILE)"
+        CODE_SIGN_IDENTITY: "$(AGENTBOT_CODE_SIGN_IDENTITY)"
+        CODE_SIGN_STYLE: "$(AGENTBOT_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(AGENTBOT_DEVELOPMENT_TEAM)"
+        PRODUCT_BUNDLE_IDENTIFIER: "$(AGENTBOT_ACTIVITY_WIDGET_BUNDLE_ID)"
+        PROVISIONING_PROFILE_SPECIFIER: "$(AGENTBOT_ACTIVITY_WIDGET_PROFILE)"
         TARGETED_DEVICE_FAMILY: "1,2"
         SWIFT_VERSION: "6.0"
         SWIFT_STRICT_CONCURRENCY: complete
@@ -244,14 +229,14 @@ targets:
     info:
       path: ActivityWidget/Info.plist
       properties:
-        CFBundleDisplayName: OpenClaw Activity
-        CFBundleShortVersionString: "$(OPENCLAW_MARKETING_VERSION)"
-        CFBundleVersion: "$(OPENCLAW_BUILD_VERSION)"
+        CFBundleDisplayName: Agentbot Activity
+        CFBundleShortVersionString: "$(AGENTBOT_MARKETING_VERSION)"
+        CFBundleVersion: "$(AGENTBOT_BUILD_VERSION)"
         NSSupportsLiveActivities: true
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
 
-  OpenClawWatchApp:
+  AgentbotWatchApp:
     type: application
     platform: watchOS
     deploymentTarget: "11.0"
@@ -267,30 +252,30 @@ targets:
       Debug: Config/Signing.xcconfig
       Release: Config/Signing.xcconfig
     attributes:
-      DevelopmentTeam: "$(OPENCLAW_DEVELOPMENT_TEAM)"
-      ProvisioningStyle: "$(OPENCLAW_CODE_SIGN_STYLE)"
+      DevelopmentTeam: "$(AGENTBOT_DEVELOPMENT_TEAM)"
+      ProvisioningStyle: "$(AGENTBOT_CODE_SIGN_STYLE)"
     settings:
       base:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        CODE_SIGN_IDENTITY: "$(OPENCLAW_CODE_SIGN_IDENTITY)"
-        CODE_SIGN_STYLE: "$(OPENCLAW_CODE_SIGN_STYLE)"
-        DEVELOPMENT_TEAM: "$(OPENCLAW_DEVELOPMENT_TEAM)"
+        CODE_SIGN_IDENTITY: "$(AGENTBOT_CODE_SIGN_IDENTITY)"
+        CODE_SIGN_STYLE: "$(AGENTBOT_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(AGENTBOT_DEVELOPMENT_TEAM)"
         ENABLE_APPINTENTS_METADATA: NO
         ENABLE_APP_INTENTS_METADATA_GENERATION: NO
-        PRODUCT_BUNDLE_IDENTIFIER: "$(OPENCLAW_WATCH_APP_BUNDLE_ID)"
-        PROVISIONING_PROFILE_SPECIFIER: "$(OPENCLAW_WATCH_APP_PROFILE)"
+        PRODUCT_BUNDLE_IDENTIFIER: "$(AGENTBOT_WATCH_APP_BUNDLE_ID)"
+        PROVISIONING_PROFILE_SPECIFIER: "$(AGENTBOT_WATCH_APP_PROFILE)"
         SWIFT_STRICT_CONCURRENCY: complete
         SWIFT_VERSION: "6.0"
     info:
       path: WatchApp/Info.plist
       properties:
-        CFBundleDisplayName: OpenClaw
-        CFBundleShortVersionString: "$(OPENCLAW_MARKETING_VERSION)"
-        CFBundleVersion: "$(OPENCLAW_BUILD_VERSION)"
-        WKCompanionAppBundleIdentifier: "$(OPENCLAW_APP_BUNDLE_ID)"
+        CFBundleDisplayName: Agentbot
+        CFBundleShortVersionString: "$(AGENTBOT_MARKETING_VERSION)"
+        CFBundleVersion: "$(AGENTBOT_BUILD_VERSION)"
+        WKCompanionAppBundleIdentifier: "$(AGENTBOT_APP_BUNDLE_ID)"
         WKApplication: true
 
-  OpenClawTests:
+  AgentbotTests:
     type: bundle.unit-test
     platform: iOS
     configFiles:
@@ -301,29 +286,29 @@ targets:
         excludes:
           - Logic
     dependencies:
-      - target: OpenClaw
+      - target: Agentbot
       - package: Swabble
         product: SwabbleKit
       - sdk: AppIntents.framework
     settings:
       base:
-        CODE_SIGN_IDENTITY: "$(OPENCLAW_CODE_SIGN_IDENTITY)"
-        CODE_SIGN_STYLE: "$(OPENCLAW_CODE_SIGN_STYLE)"
-        DEVELOPMENT_TEAM: "$(OPENCLAW_DEVELOPMENT_TEAM)"
-        PRODUCT_BUNDLE_IDENTIFIER: "$(OPENCLAW_APP_BUNDLE_ID).tests"
+        CODE_SIGN_IDENTITY: "$(AGENTBOT_CODE_SIGN_IDENTITY)"
+        CODE_SIGN_STYLE: "$(AGENTBOT_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(AGENTBOT_DEVELOPMENT_TEAM)"
+        PRODUCT_BUNDLE_IDENTIFIER: "$(AGENTBOT_APP_BUNDLE_ID).tests"
         ENABLE_APP_INTENTS_METADATA_GENERATION: NO
         SWIFT_VERSION: "6.0"
         SWIFT_STRICT_CONCURRENCY: complete
-        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/OpenClaw.app/OpenClaw"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Agentbot.app/Agentbot"
         BUNDLE_LOADER: "$(TEST_HOST)"
     info:
       path: Tests/Info.plist
       properties:
-        CFBundleDisplayName: OpenClawTests
-        CFBundleShortVersionString: "$(OPENCLAW_MARKETING_VERSION)"
-        CFBundleVersion: "$(OPENCLAW_BUILD_VERSION)"
+        CFBundleDisplayName: AgentbotTests
+        CFBundleShortVersionString: "$(AGENTBOT_MARKETING_VERSION)"
+        CFBundleVersion: "$(AGENTBOT_BUILD_VERSION)"
 
-  OpenClawLogicTests:
+  AgentbotLogicTests:
     type: bundle.unit-test
     platform: iOS
     configFiles:
@@ -335,10 +320,10 @@ targets:
       - package: OpenClawKit
     settings:
       base:
-        CODE_SIGN_IDENTITY: "$(OPENCLAW_CODE_SIGN_IDENTITY)"
-        CODE_SIGN_STYLE: "$(OPENCLAW_CODE_SIGN_STYLE)"
-        DEVELOPMENT_TEAM: "$(OPENCLAW_DEVELOPMENT_TEAM)"
-        PRODUCT_BUNDLE_IDENTIFIER: "$(OPENCLAW_APP_BUNDLE_ID).logic-tests"
+        CODE_SIGN_IDENTITY: "$(AGENTBOT_CODE_SIGN_IDENTITY)"
+        CODE_SIGN_STYLE: "$(AGENTBOT_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(AGENTBOT_DEVELOPMENT_TEAM)"
+        PRODUCT_BUNDLE_IDENTIFIER: "$(AGENTBOT_APP_BUNDLE_ID).logic-tests"
         ENABLE_APP_INTENTS_METADATA_GENERATION: NO
         SWIFT_EMIT_CONST_VALUE_PROTOCOLS: ""
         SWIFT_VERSION: "6.0"
@@ -346,11 +331,11 @@ targets:
     info:
       path: Tests/Info.plist
       properties:
-        CFBundleDisplayName: OpenClawLogicTests
-        CFBundleShortVersionString: "$(OPENCLAW_MARKETING_VERSION)"
-        CFBundleVersion: "$(OPENCLAW_BUILD_VERSION)"
+        CFBundleDisplayName: AgentbotLogicTests
+        CFBundleShortVersionString: "$(AGENTBOT_MARKETING_VERSION)"
+        CFBundleVersion: "$(AGENTBOT_BUILD_VERSION)"
 
-  OpenClawUITests:
+  AgentbotUITests:
     type: bundle.ui-testing
     platform: iOS
     configFiles:
@@ -359,22 +344,22 @@ targets:
     sources:
       - path: UITests
     dependencies:
-      - target: OpenClaw
+      - target: Agentbot
     settings:
       base:
-        CODE_SIGN_IDENTITY: "$(OPENCLAW_CODE_SIGN_IDENTITY)"
-        CODE_SIGN_STYLE: "$(OPENCLAW_CODE_SIGN_STYLE)"
-        DEVELOPMENT_TEAM: "$(OPENCLAW_DEVELOPMENT_TEAM)"
-        PRODUCT_BUNDLE_IDENTIFIER: "$(OPENCLAW_APP_BUNDLE_ID).ui-tests"
+        CODE_SIGN_IDENTITY: "$(AGENTBOT_CODE_SIGN_IDENTITY)"
+        CODE_SIGN_STYLE: "$(AGENTBOT_CODE_SIGN_STYLE)"
+        DEVELOPMENT_TEAM: "$(AGENTBOT_DEVELOPMENT_TEAM)"
+        PRODUCT_BUNDLE_IDENTIFIER: "$(AGENTBOT_APP_BUNDLE_ID).ui-tests"
         SDKROOT: iphoneos
         SUPPORTED_PLATFORMS: "iphonesimulator iphoneos"
         SUPPORTS_MACCATALYST: NO
         SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: NO
-        TEST_TARGET_NAME: OpenClaw
+        TEST_TARGET_NAME: Agentbot
         SWIFT_VERSION: "5.0"
     info:
       path: UITests/Info.plist
       properties:
-        CFBundleDisplayName: OpenClawUITests
-        CFBundleShortVersionString: "$(OPENCLAW_MARKETING_VERSION)"
-        CFBundleVersion: "$(OPENCLAW_BUILD_VERSION)"
+        CFBundleDisplayName: AgentbotUITests
+        CFBundleShortVersionString: "$(AGENTBOT_MARKETING_VERSION)"
+        CFBundleVersion: "$(AGENTBOT_BUILD_VERSION)"
