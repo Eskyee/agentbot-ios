@@ -55,7 +55,7 @@ struct MainTabView: View {
             .tag(3)
             
             NavigationStack {
-                SettingsProTab()
+                AgentbotSettingsView()
             }
             .tabItem {
                 Label("Settings", systemImage: "gearshape.fill")
