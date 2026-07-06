@@ -49,7 +49,7 @@ cat > build/ExportOptions.plist << EOF
     <key>method</key>
     <string>app-store</string>
     <key>teamID</key>
-    <string>YOUR_TEAM_ID</string>
+    <string>U8C49P573P</string>
     <key>uploadSymbols</key>
     <true/>
     <key>compileBitcode</key>

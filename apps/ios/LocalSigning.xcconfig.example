@@ -1,7 +1,7 @@
 // Copy this file to LocalSigning.xcconfig for local development overrides.
 // This file is git-ignored.
 
-AGENTBOT_DEVELOPMENT_TEAM = YOUR_TEAM_ID
+AGENTBOT_DEVELOPMENT_TEAM = U8C49P573P
 AGENTBOT_APP_BUNDLE_ID = sh.agentbot.app.dev
 AGENTBOT_SHARE_BUNDLE_ID = sh.agentbot.app.dev.share
 AGENTBOT_APP_GROUP_ID = group.sh.agentbot.app.dev.shared
