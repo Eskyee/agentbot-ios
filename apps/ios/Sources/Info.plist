@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AgentbotAppGroupIdentifier</key>
+	<string>$(AGENTBOT_APP_GROUP_ID)</string>
+	<key>AgentbotCanonicalVersion</key>
+	<string>$(AGENTBOT_IOS_VERSION)</string>
+	<key>AgentbotPushMode</key>
+	<string>$(AGENTBOT_PUSH_MODE)</string>
+	<key>AgentbotPushRelayBaseURL</key>
+	<string>$(AGENTBOT_PUSH_RELAY_BASE_URL)</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
 		<string>$(AGENTBOT_APP_BUNDLE_ID).bgrefresh</string>
@@ -51,15 +59,15 @@
 		<string>_agentbot-gw._tcp</string>
 	</array>
 	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>Agentbot uses your calendars to show events and scheduling context when you enable calendar access.</string>
+	<string>Agentbot uses your calendars to show events and scheduling context.</string>
 	<key>NSCalendarsUsageDescription</key>
-	<string>Agentbot uses your calendars to show events and scheduling context when you enable calendar access.</string>
+	<string>Agentbot uses your calendars to show events and scheduling context.</string>
 	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
-	<string>Agentbot uses your calendars to add events when you enable calendar access.</string>
+	<string>Agentbot uses your calendars to add events.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Agentbot uses the camera when you scan a Gateway setup QR code or ask your paired Gateway or assistant to capture a photo or short video from this iPhone, for example to connect to your Gateway or show your assistant a document, device screen, or workspace.</string>
+	<string>Agentbot uses the camera to capture photos or scan QR codes.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Agentbot uses your contacts so you can search and reference people while using the assistant.</string>
+	<string>Agentbot uses your contacts so you can search and reference people.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Agentbot discovers and connects to your Agentbot gateway on the local network.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -71,21 +79,13 @@
 	<key>NSMotionUsageDescription</key>
 	<string>Agentbot may use motion data to support device-aware interactions and automations.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Agentbot needs photo library access when you choose existing photos to share with your assistant.</string>
+	<string>Agentbot needs photo library access when you choose existing photos to share.</string>
 	<key>NSRemindersFullAccessUsageDescription</key>
-	<string>Agentbot uses your reminders to list, add, and complete tasks when you enable reminders access.</string>
+	<string>Agentbot uses your reminders to list, add, and complete tasks.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Agentbot uses on-device speech recognition for talk mode and voice wake.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
-	<key>AgentbotAppGroupIdentifier</key>
-	<string>$(AGENTBOT_APP_GROUP_ID)</string>
-	<key>AgentbotCanonicalVersion</key>
-	<string>$(AGENTBOT_IOS_VERSION)</string>
-	<key>AgentbotPushMode</key>
-	<string>$(AGENTBOT_PUSH_MODE)</string>
-	<key>AgentbotPushRelayBaseURL</key>
-	<string>$(AGENTBOT_PUSH_RELAY_BASE_URL)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
