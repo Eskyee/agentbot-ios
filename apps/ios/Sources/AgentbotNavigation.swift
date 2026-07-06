@@ -47,12 +47,20 @@ struct MainTabView: View {
             .tag(2)
             
             NavigationStack {
+                GatewayConnectionView()
+            }
+            .tabItem {
+                Label("Gateway", systemImage: "network")
+            }
+            .tag(3)
+            
+            NavigationStack {
                 MarketplaceView()
             }
             .tabItem {
                 Label("Market", systemImage: "storefront.fill")
             }
-            .tag(3)
+            .tag(4)
             
             NavigationStack {
                 AgentbotSettingsView()
@@ -60,7 +68,7 @@ struct MainTabView: View {
             .tabItem {
                 Label("Settings", systemImage: "gearshape.fill")
             }
-            .tag(4)
+            .tag(5)
         }
         .tint(AgentbotBrand.accent)
     }
