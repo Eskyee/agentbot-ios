@@ -4,12 +4,12 @@
 <dict>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>$(OPENCLAW_APP_BUNDLE_ID).bgrefresh</string>
+		<string>$(AGENTBOT_APP_BUNDLE_ID).bgrefresh</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>OpenClaw</string>
+	<string>Agentbot</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIconName</key>
@@ -23,20 +23,20 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(OPENCLAW_MARKETING_VERSION)</string>
+	<string>$(AGENTBOT_MARKETING_VERSION)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>ai.openclawfoundation.app</string>
+			<string>sh.agentbot.app</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>openclaw</string>
+				<string>agentbot</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(OPENCLAW_BUILD_VERSION)</string>
+	<string>$(AGENTBOT_BUILD_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSAppTransportSecurity</key>
@@ -48,44 +48,44 @@
 	</dict>
 	<key>NSBonjourServices</key>
 	<array>
-		<string>_openclaw-gw._tcp</string>
+		<string>_agentbot-gw._tcp</string>
 	</array>
 	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>OpenClaw uses your calendars to show events and scheduling context when you enable calendar access.</string>
+	<string>Agentbot uses your calendars to show events and scheduling context when you enable calendar access.</string>
 	<key>NSCalendarsUsageDescription</key>
-	<string>OpenClaw uses your calendars to show events and scheduling context when you enable calendar access.</string>
+	<string>Agentbot uses your calendars to show events and scheduling context when you enable calendar access.</string>
 	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
-	<string>OpenClaw uses your calendars to add events when you enable calendar access.</string>
+	<string>Agentbot uses your calendars to add events when you enable calendar access.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>OpenClaw uses the camera when you scan a Gateway setup QR code or ask your paired Gateway or assistant to capture a photo or short video from this iPhone, for example to connect to your Gateway or show your assistant a document, device screen, or workspace.</string>
+	<string>Agentbot uses the camera when you scan a Gateway setup QR code or ask your paired Gateway or assistant to capture a photo or short video from this iPhone, for example to connect to your Gateway or show your assistant a document, device screen, or workspace.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>OpenClaw uses your contacts so you can search and reference people while using the assistant.</string>
+	<string>Agentbot uses your contacts so you can search and reference people while using the assistant.</string>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>OpenClaw discovers and connects to your OpenClaw gateway on the local network.</string>
+	<string>Agentbot discovers and connects to your Agentbot gateway on the local network.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>OpenClaw can share your location in the background when you enable Always.</string>
+	<string>Agentbot can share your location in the background when you enable Always.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>OpenClaw uses your location when you allow location sharing.</string>
+	<string>Agentbot uses your location when you allow location sharing.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>OpenClaw uses the microphone for realtime chat, voice wake, and push-to-talk.</string>
+	<string>Agentbot uses the microphone for realtime chat, voice wake, and push-to-talk.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>OpenClaw may use motion data to support device-aware interactions and automations.</string>
+	<string>Agentbot may use motion data to support device-aware interactions and automations.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>OpenClaw needs photo library access when you choose existing photos to share with your assistant.</string>
+	<string>Agentbot needs photo library access when you choose existing photos to share with your assistant.</string>
 	<key>NSRemindersFullAccessUsageDescription</key>
-	<string>OpenClaw uses your reminders to list, add, and complete tasks when you enable reminders access.</string>
+	<string>Agentbot uses your reminders to list, add, and complete tasks when you enable reminders access.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>OpenClaw uses on-device speech recognition for talk mode and voice wake.</string>
+	<string>Agentbot uses on-device speech recognition for talk mode and voice wake.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
-	<key>OpenClawAppGroupIdentifier</key>
-	<string>$(OPENCLAW_APP_GROUP_ID)</string>
-	<key>OpenClawCanonicalVersion</key>
-	<string>$(OPENCLAW_IOS_VERSION)</string>
-	<key>OpenClawPushMode</key>
-	<string>$(OPENCLAW_PUSH_MODE)</string>
-	<key>OpenClawPushRelayBaseURL</key>
-	<string>$(OPENCLAW_PUSH_RELAY_BASE_URL)</string>
+	<key>AgentbotAppGroupIdentifier</key>
+	<string>$(AGENTBOT_APP_GROUP_ID)</string>
+	<key>AgentbotCanonicalVersion</key>
+	<string>$(AGENTBOT_IOS_VERSION)</string>
+	<key>AgentbotPushMode</key>
+	<string>$(AGENTBOT_PUSH_MODE)</string>
+	<key>AgentbotPushRelayBaseURL</key>
+	<string>$(AGENTBOT_PUSH_RELAY_BASE_URL)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
