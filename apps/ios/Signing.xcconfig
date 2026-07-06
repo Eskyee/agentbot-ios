@@ -1,25 +1,25 @@
-// Default signing values for shared/repo builds.
+// Agentbot signing defaults.
 // Auto-selected local team overrides live in .local-signing.xcconfig (git-ignored).
 // Manual local overrides can go in LocalSigning.xcconfig (git-ignored).
 
 #include "Config/Version.xcconfig"
 
-OPENCLAW_CODE_SIGN_STYLE = Manual
-OPENCLAW_CODE_SIGN_IDENTITY = Apple Development
-OPENCLAW_CODE_SIGN_ENTITLEMENTS = Sources/OpenClaw.entitlements
-OPENCLAW_DEVELOPMENT_TEAM = FWJYW4S8P8
+AGENTBOT_CODE_SIGN_STYLE = Automatic
+AGENTBOT_CODE_SIGN_IDENTITY = Apple Development
+AGENTBOT_CODE_SIGN_ENTITLEMENTS = Sources/Agentbot.entitlements
+AGENTBOT_DEVELOPMENT_TEAM = YOUR_TEAM_ID
 
-OPENCLAW_APP_BUNDLE_ID = ai.openclawfoundation.app
-OPENCLAW_SHARE_BUNDLE_ID = ai.openclawfoundation.app.share
-OPENCLAW_APP_GROUP_ID = group.ai.openclawfoundation.app.shared
-OPENCLAW_WATCH_APP_BUNDLE_ID = ai.openclawfoundation.app.watchkitapp
-OPENCLAW_ACTIVITY_WIDGET_BUNDLE_ID = ai.openclawfoundation.app.activitywidget
-OPENCLAW_APNS_ENTITLEMENT_ENVIRONMENT = development
+AGENTBOT_APP_BUNDLE_ID = sh.agentbot.app
+AGENTBOT_SHARE_BUNDLE_ID = sh.agentbot.app.share
+AGENTBOT_APP_GROUP_ID = group.sh.agentbot.app.shared
+AGENTBOT_WATCH_APP_BUNDLE_ID = sh.agentbot.app.watchkitapp
+AGENTBOT_ACTIVITY_WIDGET_BUNDLE_ID = sh.agentbot.app.activitywidget
+AGENTBOT_APNS_ENTITLEMENT_ENVIRONMENT = development
 
-OPENCLAW_APP_PROFILE = ai.openclawfoundation.app Development
-OPENCLAW_SHARE_PROFILE = ai.openclawfoundation.app.share Development
-OPENCLAW_ACTIVITY_WIDGET_PROFILE =
-OPENCLAW_WATCH_APP_PROFILE =
+AGENTBOT_APP_PROFILE =
+AGENTBOT_SHARE_PROFILE =
+AGENTBOT_ACTIVITY_WIDGET_PROFILE =
+AGENTBOT_WATCH_APP_PROFILE =
 
 // Keep local includes after defaults: xcconfig is evaluated top-to-bottom,
 // so later assignments in local files override the defaults above.

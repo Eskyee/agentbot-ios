@@ -1,18 +1,9 @@
-// Copy to LocalSigning.xcconfig for personal local signing overrides.
-// This file is only an example and should stay committed.
+// Copy this file to LocalSigning.xcconfig for local development overrides.
+// This file is git-ignored.
 
-OPENCLAW_CODE_SIGN_STYLE = Automatic
-OPENCLAW_CODE_SIGN_IDENTITY = Apple Development
-OPENCLAW_DEVELOPMENT_TEAM = YOUR_TEAM_ID
-
-OPENCLAW_APP_BUNDLE_ID = ai.openclawfoundation.app
-OPENCLAW_SHARE_BUNDLE_ID = ai.openclawfoundation.app.share
-OPENCLAW_APP_GROUP_ID = group.ai.openclawfoundation.app.shared
-OPENCLAW_ACTIVITY_WIDGET_BUNDLE_ID = ai.openclawfoundation.app.activitywidget
-OPENCLAW_WATCH_APP_BUNDLE_ID = ai.openclawfoundation.app.watchkitapp
-
-// Leave empty with automatic signing.
-OPENCLAW_APP_PROFILE =
-OPENCLAW_SHARE_PROFILE =
-OPENCLAW_ACTIVITY_WIDGET_PROFILE =
-OPENCLAW_WATCH_APP_PROFILE =
+AGENTBOT_DEVELOPMENT_TEAM = YOUR_TEAM_ID
+AGENTBOT_APP_BUNDLE_ID = sh.agentbot.app.dev
+AGENTBOT_SHARE_BUNDLE_ID = sh.agentbot.app.dev.share
+AGENTBOT_APP_GROUP_ID = group.sh.agentbot.app.dev.shared
+AGENTBOT_WATCH_APP_BUNDLE_ID = sh.agentbot.app.dev.watchkitapp
+AGENTBOT_ACTIVITY_WIDGET_BUNDLE_ID = sh.agentbot.app.dev.activitywidget
