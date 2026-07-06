@@ -5,10 +5,17 @@ struct LoginView: View {
     @StateObject private var auth = AuthManager.shared
     @State private var email = ""
     @State private var password = ""
+    @State private var apiKey = ""
     @State private var name = ""
     @State private var isSignup = false
+    @State private var loginMode: LoginMode = .apiKey
     @State private var isLoading = false
     @State private var errorMessage: String?
+    @State private var showQRScanner = false
+    
+    enum LoginMode {
+        case apiKey, email
+    }
 
     var body: some View {
         NavigationStack {
@@ -17,9 +24,8 @@ struct LoginView: View {
                     Spacer(minLength: 60)
 
                     VStack(spacing: 8) {
-                        Image(systemName: "brain.head.profile.fill")
+                        Text("🦞")
                             .font(.system(size: 64))
-                            .foregroundStyle(AgentbotBrand.accent)
 
                         Text("Agentbot")
                             .font(.largeTitle.bold())
@@ -27,24 +33,38 @@ struct LoginView: View {
                         Text("Your AI agent, always with you.")
                             .foregroundStyle(.secondary)
                     }
+                    
+                    Picker("Login Mode", selection: $loginMode) {
+                        Text("API Key").tag(LoginMode.apiKey)
+                        Text("Email").tag(LoginMode.email)
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.horizontal, 32)
 
                     VStack(spacing: 16) {
-                        if isSignup {
-                            TextField("Name", text: $name)
+                        if loginMode == .apiKey {
+                            TextField("API Key", text: $apiKey)
                                 .textFieldStyle(.roundedBorder)
-                                .textContentType(.name)
-                                .autocorrectionDisabled()
+                                .autocapitalization(.none)
+                                .disableAutocorrection(true)
+                        } else {
+                            if isSignup {
+                                TextField("Name", text: $name)
+                                    .textFieldStyle(.roundedBorder)
+                                    .textContentType(.name)
+                                    .autocorrectionDisabled()
+                            }
+
+                            TextField("Email", text: $email)
+                                .textFieldStyle(.roundedBorder)
+                                .textContentType(.emailAddress)
+                                .autocapitalization(.none)
+                                .keyboardType(.emailAddress)
+
+                            SecureField("Password", text: $password)
+                                .textFieldStyle(.roundedBorder)
+                                .textContentType(isSignup ? .newPassword : .password)
                         }
-
-                        TextField("Email", text: $email)
-                            .textFieldStyle(.roundedBorder)
-                            .textContentType(.emailAddress)
-                            .autocapitalization(.none)
-                            .keyboardType(.emailAddress)
-
-                        SecureField("Password", text: $password)
-                            .textFieldStyle(.roundedBorder)
-                            .textContentType(isSignup ? .newPassword : .password)
                     }
 
                     if let errorMessage {
@@ -56,17 +76,20 @@ struct LoginView: View {
                     Button {
                         Task { await submit() }
                     } label: {
-                        if isLoading {
-                            ProgressView()
-                                .frame(maxWidth: .infinity)
-                        } else {
-                            Text(isSignup ? "Create Account" : "Sign In")
-                                .frame(maxWidth: .infinity)
+                        Group {
+                            if isLoading {
+                                ProgressView()
+                            } else if loginMode == .apiKey {
+                                Text("Connect with API Key")
+                            } else {
+                                Text(isSignup ? "Create Account" : "Sign In")
+                            }
                         }
+                        .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(AgentbotBrand.accent)
-                    .disabled(isLoading || email.isEmpty || password.isEmpty)
+                    .disabled(isLoading || (loginMode == .apiKey ? apiKey.isEmpty : (email.isEmpty || password.isEmpty)))
 
                     Button {
                         withAnimation { isSignup.toggle() }
@@ -124,14 +147,18 @@ struct LoginView: View {
         errorMessage = nil
 
         do {
-            if isSignup {
-                try await auth.signup(
-                    email: email,
-                    password: password,
-                    name: name.isEmpty ? nil : name
-                )
+            if loginMode == .apiKey {
+                try await auth.loginWithAPIKey(apiKey)
             } else {
-                try await auth.login(email: email, password: password)
+                if isSignup {
+                    try await auth.signup(
+                        email: email,
+                        password: password,
+                        name: name.isEmpty ? nil : name
+                    )
+                } else {
+                    try await auth.login(email: email, password: password)
+                }
             }
         } catch {
             errorMessage = error.localizedDescription

@@ -3,15 +3,15 @@ import SwiftUI
 enum AgentbotBrand {
     static let uiAccent = UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(red: 59 / 255.0, green: 130 / 255.0, blue: 246 / 255.0, alpha: 1)
-            : UIColor(red: 37 / 255.0, green: 99 / 255.0, blue: 235 / 255.0, alpha: 1)
+            ? UIColor(red: 239 / 255.0, green: 68 / 255.0, blue: 68 / 255.0, alpha: 1)
+            : UIColor(red: 220 / 255.0, green: 38 / 255.0, blue: 38 / 255.0, alpha: 1)
     }
 
     static let accent = Color(uiColor: Self.uiAccent)
     static let accentHot = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(red: 96 / 255.0, green: 165 / 255.0, blue: 250 / 255.0, alpha: 1)
-            : UIColor(red: 59 / 255.0, green: 130 / 255.0, blue: 246 / 255.0, alpha: 1)
+            ? UIColor(red: 252 / 255.0, green: 129 / 255.0, blue: 129 / 255.0, alpha: 1)
+            : UIColor(red: 239 / 255.0, green: 68 / 255.0, blue: 68 / 255.0, alpha: 1)
     })
     static let danger = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark
@@ -20,24 +20,27 @@ enum AgentbotBrand {
     })
     static let ok = Color(red: 34 / 255.0, green: 197 / 255.0, blue: 94 / 255.0)
     static let warn = Color(red: 245 / 255.0, green: 158 / 255.0, blue: 11 / 255.0)
-    static let info = Color(red: 59 / 255.0, green: 130 / 255.0, blue: 246 / 255.0)
+    static let info = Color(red: 239 / 255.0, green: 68 / 255.0, blue: 68 / 255.0)
     static let graphite = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(red: 20 / 255.0, green: 22 / 255.0, blue: 24 / 255.0, alpha: 1)
+            ? UIColor(red: 10 / 255.0, green: 10 / 255.0, blue: 10 / 255.0, alpha: 1)
             : UIColor(red: 246 / 255.0, green: 247 / 255.0, blue: 249 / 255.0, alpha: 1)
     })
     static let graphiteElevated = Color(uiColor: UIColor { traits in
         traits.userInterfaceStyle == .dark
-            ? UIColor(red: 34 / 255.0, green: 36 / 255.0, blue: 39 / 255.0, alpha: 1)
+            ? UIColor(red: 20 / 255.0, green: 20 / 255.0, blue: 20 / 255.0, alpha: 1)
             : UIColor.white
     })
+
+    static let brandBlack = Color(red: 0 / 255.0, green: 0 / 255.0, blue: 0 / 255.0)
+    static let brandWhite = Color(red: 255 / 255.0, green: 255 / 255.0, blue: 255 / 255.0)
 
     static var sheetBackground: LinearGradient {
         LinearGradient(
             colors: [
+                brandBlack,
                 graphite,
                 graphiteElevated.opacity(0.96),
-                Color(uiColor: .systemBackground),
             ],
             startPoint: .topLeading,
             endPoint: .bottomTrailing)

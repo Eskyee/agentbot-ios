@@ -1,5 +1,5 @@
 import SwiftUI
-import AVFoundation
+@preconcurrency import AVFoundation
 
 struct GatewayConnectionView: View {
     @State private var showQRScanner = false
@@ -292,8 +292,23 @@ struct QRScannerSheet: View {
     }
     
     private func handleScannedCode(_ code: String) {
-        // Parse gateway URL from QR code
-        // Expected format: agentbot://gateway?host=X&port=Y
+        // Handle login QR codes from agentbot.sh
+        // Format: agentbot://login?key=YOUR_API_KEY
+        if let url = URL(string: code),
+           url.scheme == "agentbot",
+           url.host() == "login",
+           let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+           let apiKey = components.queryItems?.first(where: { $0.name == "key" })?.value {
+            
+            Task {
+                try? await AuthManager.shared.loginWithAPIKey(apiKey)
+            }
+            dismiss()
+            return
+        }
+        
+        // Handle gateway pairing QR codes
+        // Format: agentbot://gateway?host=X&port=Y
         guard let url = URL(string: code),
               url.scheme == "agentbot",
               url.host() == "gateway",
@@ -357,7 +372,7 @@ struct QRScannerViewRepresentable: UIViewRepresentable {
 @preconcurrency @MainActor
 class QRScannerUIView: UIView, AVCaptureMetadataOutputObjectsDelegate {
     var onScanned: ((String) -> Void)?
-    private var captureSession: AVCaptureSession?
+    private nonisolated(unsafe) var captureSession: AVCaptureSession?
     private var previewLayer: AVCaptureVideoPreviewLayer?
     
     override init(frame: CGRect) {

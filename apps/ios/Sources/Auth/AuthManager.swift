@@ -13,24 +13,23 @@ final class AuthManager: ObservableObject {
 
     struct User: Codable, Sendable {
         let id: String
-        let email: String
+        let email: String?
         let name: String?
+        let plan: String?
+        let features: [String]?
+    }
+
+    struct ValidateKeyResponse: Codable, Sendable {
+        let valid: Bool
+        let userId: String?
+        let plan: String?
+        let features: [String]?
+        let error: String?
     }
 
     struct AuthResponse: Codable, Sendable {
         let token: String
         let user: User
-    }
-
-    struct LoginRequest: Codable, Sendable {
-        let email: String
-        let password: String
-    }
-
-    struct SignupRequest: Codable, Sendable {
-        let email: String
-        let password: String
-        let name: String?
     }
 
     var token: String? {
@@ -44,10 +43,37 @@ final class AuthManager: ObservableObject {
         }
     }
 
+    func loginWithAPIKey(_ apiKey: String) async throws {
+        let response: ValidateKeyResponse = try await request(
+            path: "/api/validate-key",
+            method: "POST",
+            body: nil,
+            extraHeaders: ["Authorization": "Bearer \(apiKey)"]
+        )
+
+        guard response.valid, let userId = response.userId else {
+            throw AuthError.invalidCredentials
+        }
+
+        self.token = apiKey
+        self.currentUser = User(
+            id: userId,
+            email: nil,
+            name: nil,
+            plan: response.plan,
+            features: response.features
+        )
+        self.isAuthenticated = true
+    }
+
     func login(email: String, password: String) async throws {
+        struct LoginRequest: Codable {
+            let email: String
+            let password: String
+        }
         let body = LoginRequest(email: email, password: password)
         let response: AuthResponse = try await request(
-            path: "/auth/login",
+            path: "/api/auth/login",
             method: "POST",
             body: body
         )
@@ -58,9 +84,14 @@ final class AuthManager: ObservableObject {
     }
 
     func signup(email: String, password: String, name: String?) async throws {
+        struct SignupRequest: Codable {
+            let email: String
+            let password: String
+            let name: String?
+        }
         let body = SignupRequest(email: email, password: password, name: name)
         let response: AuthResponse = try await request(
-            path: "/auth/signup",
+            path: "/api/auth/signup",
             method: "POST",
             body: body
         )
@@ -80,11 +111,25 @@ final class AuthManager: ObservableObject {
         guard let token = token, !token.isEmpty else { return }
 
         do {
-            let user: User = try await request(
-                path: "/auth/me",
-                method: "GET"
+            let response: ValidateKeyResponse = try await request(
+                path: "/api/validate-key",
+                method: "POST",
+                body: nil,
+                extraHeaders: ["Authorization": "Bearer \(token)"]
             )
-            self.currentUser = user
+
+            guard response.valid, let userId = response.userId else {
+                logout()
+                return
+            }
+
+            self.currentUser = User(
+                id: userId,
+                email: nil,
+                name: nil,
+                plan: response.plan,
+                features: response.features
+            )
             self.isAuthenticated = true
         } catch {
             logout()
@@ -94,25 +139,32 @@ final class AuthManager: ObservableObject {
     func authorizedRequest(
         path: String,
         method: String = "GET",
-        body: (any Encodable)? = nil
+        body: (any Encodable)? = nil,
+        extraHeaders: [String: String]? = nil
     ) async throws -> Data {
         guard let token = token else {
             throw AuthError.notAuthenticated
         }
 
-        var request = URLRequest(
+        var urlRequest = URLRequest(
             url: baseURL.appendingPathComponent(path)
         )
-        request.httpMethod = method
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        urlRequest.httpMethod = method
+        urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        if let extraHeaders = extraHeaders {
+            for (key, value) in extraHeaders {
+                urlRequest.setValue(value, forHTTPHeaderField: key)
+            }
+        }
 
         if let body = body {
             let encoder = JSONEncoder()
-            request.httpBody = try encoder.encode(body)
+            urlRequest.httpBody = try encoder.encode(body)
         }
 
-        let (data, response) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: urlRequest)
 
         guard let httpResponse = response as? HTTPURLResponse,
               (200...299).contains(httpResponse.statusCode)
@@ -126,27 +178,15 @@ final class AuthManager: ObservableObject {
     private func request<T: Decodable>(
         path: String,
         method: String,
-        body: (any Encodable)? = nil
+        body: (any Encodable)? = nil,
+        extraHeaders: [String: String]? = nil
     ) async throws -> T {
-        var request = URLRequest(
-            url: baseURL.appendingPathComponent(path)
+        let data = try await authorizedRequest(
+            path: path,
+            method: method,
+            body: body,
+            extraHeaders: extraHeaders
         )
-        request.httpMethod = method
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        if let body = body {
-            let encoder = JSONEncoder()
-            request.httpBody = try encoder.encode(body)
-        }
-
-        let (data, response) = try await URLSession.shared.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse,
-              (200...299).contains(httpResponse.statusCode)
-        else {
-            throw AuthError.serverError
-        }
-
         let decoder = JSONDecoder()
         return try decoder.decode(T.self, from: data)
     }
@@ -209,7 +249,7 @@ final class AuthManager: ObservableObject {
             case .serverError:
                 return "Server error. Please try again."
             case .invalidCredentials:
-                return "Invalid email or password."
+                return "Invalid API key."
             }
         }
     }

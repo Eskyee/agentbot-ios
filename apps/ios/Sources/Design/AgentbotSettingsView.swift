@@ -12,7 +12,7 @@ struct AgentbotSettingsView: View {
                             .font(.title2)
                         VStack(alignment: .leading) {
                             Text(user.name ?? "User").font(.headline)
-                            Text(user.email).font(.caption).foregroundStyle(.secondary)
+                            Text(user.email ?? "No email").font(.caption).foregroundStyle(.secondary)
                         }
                     }
                 }
