@@ -301,6 +301,9 @@ struct QRScannerSheet: View {
            let apiKey = components.queryItems?.first(where: { $0.name == "key" })?.value {
             
             Task {
+                // Confirm pairing with backend
+                await confirmPairing(code: apiKey)
+                // Login with the API key
                 try? await AuthManager.shared.loginWithAPIKey(apiKey)
             }
             dismiss()
@@ -354,6 +357,24 @@ struct QRScannerSheet: View {
                 cameraPermission = granted
             }
         }
+    }
+    
+    private func confirmPairing(code: String) async {
+        let deviceId = await UIDevice.current.identifierForVendor?.uuidString ?? "unknown"
+        
+        struct ConfirmRequest: Codable {
+            let code: String
+            let deviceId: String
+        }
+        
+        let body = ConfirmRequest(code: code, deviceId: deviceId)
+        
+        var request = URLRequest(url: URL(string: "https://agentbot.sh/api/pair/confirm")!)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try? JSONEncoder().encode(body)
+        
+        _ = try? await URLSession.shared.data(for: request)
     }
 }
 
