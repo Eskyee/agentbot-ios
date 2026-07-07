@@ -8,7 +8,7 @@ final class AuthManager: ObservableObject {
     @Published var isAuthenticated = false
     @Published var currentUser: User?
 
-    private let baseURL = URL(string: "https://api.agentbot.sh")!
+    private let baseURL = URL(string: "https://agentbot-backend.fly.dev")!
     private let keychainService = "sh.agentbot.app"
 
     struct User: Codable, Sendable {

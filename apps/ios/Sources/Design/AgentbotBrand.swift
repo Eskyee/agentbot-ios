@@ -1,5 +1,51 @@
 import SwiftUI
 
+enum AppAppearancePreference: String, CaseIterable, Identifiable {
+    case system
+    case light
+    case dark
+
+    static let storageKey = "appearance.preference"
+
+    static var launchArgumentPreference: AppAppearancePreference? {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let flagIndex = arguments.firstIndex(of: "--agentbot-appearance") else {
+            return nil
+        }
+        let valueIndex = arguments.index(after: flagIndex)
+        guard arguments.indices.contains(valueIndex) else { return nil }
+        return AppAppearancePreference(rawValue: arguments[valueIndex].lowercased())
+    }
+
+    var id: String {
+        self.rawValue
+    }
+
+    var label: String {
+        switch self {
+        case .system: "System"
+        case .light: "Light"
+        case .dark: "Dark"
+        }
+    }
+
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system: nil
+        case .light: .light
+        case .dark: .dark
+        }
+    }
+
+    var userInterfaceStyle: UIUserInterfaceStyle {
+        switch self {
+        case .system: .unspecified
+        case .light: .light
+        case .dark: .dark
+        }
+    }
+}
+
 enum AgentbotBrand {
     static let uiAccent = UIColor { traits in
         traits.userInterfaceStyle == .dark

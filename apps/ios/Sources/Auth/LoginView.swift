@@ -1,6 +1,6 @@
 import SwiftUI
 import AuthenticationServices
-import AVFoundation
+@preconcurrency import AVFoundation
 
 struct LoginView: View {
     @StateObject private var auth = AuthManager.shared
@@ -195,7 +195,7 @@ struct LoginView: View {
             auth.currentUser = response.user
             auth.isAuthenticated = true
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = "Google Sign-In unavailable. Please use email/password or API key."
         }
         isLoading = false
     }
@@ -298,7 +298,7 @@ struct LoginQRScannerSheet: View {
         
         let body = ConfirmRequest(code: code, deviceId: deviceId)
         
-        var request = URLRequest(url: URL(string: "https://agentbot.sh/api/pair/confirm")!)
+        var request = URLRequest(url: URL(string: "https://agentbot-backend.fly.dev/api/pair/confirm")!)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONEncoder().encode(body)
@@ -308,7 +308,7 @@ struct LoginQRScannerSheet: View {
 }
 
 struct LoginQRScannerRepresentable: UIViewRepresentable {
-    let onScanned: (String) -> Void
+    let onScanned: @Sendable (String) -> Void
     
     func makeUIView(context: Context) -> LoginQRScannerUIView {
         let view = LoginQRScannerUIView()
@@ -321,7 +321,7 @@ struct LoginQRScannerRepresentable: UIViewRepresentable {
 
 @MainActor
 class LoginQRScannerUIView: UIView, @preconcurrency AVCaptureMetadataOutputObjectsDelegate {
-    var onScanned: ((String) -> Void)?
+    var onScanned: (@Sendable (String) -> Void)?
     private nonisolated(unsafe) var session: AVCaptureSession?
     
     override init(frame: CGRect) {
@@ -357,7 +357,8 @@ class LoginQRScannerUIView: UIView, @preconcurrency AVCaptureMetadataOutputObjec
         layer.sublayers?.first?.frame = bounds
     }
     
-    nonisolated func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+    @MainActor
+    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         guard let obj = metadataObjects.first as? AVMetadataMachineReadableCodeObject,
               let value = obj.stringValue else { return }
         session?.stopRunning()

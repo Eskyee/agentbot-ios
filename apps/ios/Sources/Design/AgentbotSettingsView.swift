@@ -41,7 +41,7 @@ struct AgentbotSettingsView: View {
             
             Section("About") {
                 LabeledContent("Platform", value: "Agentbot")
-                LabeledContent("Runtime", value: "OpenClaw")
+                LabeledContent("Runtime", value: "Agentbot")
             }
         }
         .navigationTitle("Settings")

@@ -10,6 +10,6 @@ enum FeatureFlags {
     static let skillsCatalogEnabled = true
     static let marketplaceEnabled = true
     
-    static let apiBaseURL = URL(string: "https://api.agentbot.sh")!
-    static let wsBaseURL = URL(string: "wss://api.agentbot.sh")!
+    static let apiBaseURL = URL(string: "https://agentbot-backend.fly.dev")!
+    static let wsBaseURL = URL(string: "wss://agentbot-backend.fly.dev")!
 }

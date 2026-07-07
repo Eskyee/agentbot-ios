@@ -9,9 +9,9 @@ final class APIClient: ObservableObject {
         
         var baseURL: URL {
             switch self {
-            case .development: return URL(string: "https://dev.api.agentbot.sh")!
-            case .staging: return URL(string: "https://staging.api.agentbot.sh")!
-            case .production: return URL(string: "https://api.agentbot.sh")!
+            case .development: return URL(string: "https://agentbot-backend.fly.dev")!
+            case .staging: return URL(string: "https://agentbot-backend.fly.dev")!
+            case .production: return URL(string: "https://agentbot-backend.fly.dev")!
             }
         }
     }

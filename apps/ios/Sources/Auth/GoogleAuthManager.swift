@@ -9,9 +9,9 @@ final class GoogleAuthManager: NSObject, ObservableObject {
     @Published var isAuthenticating = false
     
     private var webSession: ASWebAuthenticationSession?
+    private var authContinuation: CheckedContinuation<AuthManager.AuthResponse, Error>?
     
-    private let googleClientId = "444006121351-hl2ln0igvd9lm6p8l0679sff2trfuijs.apps.googleusercontent.com"
-    private let redirectUri = "https://agentbot.sh/api/auth/callback/google"
+    private let backendBaseURL = "https://agentbot-backend.fly.dev"
     
     struct GoogleTokenResponse: Codable {
         let access_token: String
@@ -37,40 +37,58 @@ final class GoogleAuthManager: NSObject, ObservableObject {
         isAuthenticating = true
         defer { isAuthenticating = false }
         
-        let state = UUID().uuidString
-        let scopes = ["email", "profile", "openid"].joined(separator: " ")
+        // Open the backend OAuth start endpoint
+        // Backend redirects to Google, then back to agentbot://auth?token=xxx
+        let authURL = URL(string: "\(backendBaseURL)/api/auth/google/start")!
         
-        var components = URLComponents(string: "https://accounts.google.com/o/oauth2/v2/auth")!
-        components.queryItems = [
-            URLQueryItem(name: "client_id", value: googleClientId),
-            URLQueryItem(name: "redirect_uri", value: redirectUri),
-            URLQueryItem(name: "response_type", value: "code"),
-            URLQueryItem(name: "scope", value: scopes),
-            URLQueryItem(name: "state", value: state),
-            URLQueryItem(name: "prompt", value: "select_account"),
-            URLQueryItem(name: "access_type", value: "offline"),
-        ]
-        
-        let authURL = components.url!
-        
-        let code: String = try await withCheckedThrowingContinuation { continuation in
+        let response: AuthManager.AuthResponse = try await withCheckedThrowingContinuation { continuation in
+            self.authContinuation = continuation
+            
             let session = ASWebAuthenticationSession(url: authURL, callbackURLScheme: "agentbot") { callbackURL, error in
                 Task { @MainActor in
                     if let error = error {
-                        continuation.resume(throwing: error)
+                        self.authContinuation?.resume(throwing: error)
+                        self.authContinuation = nil
                         return
                     }
+                    
                     guard let callbackURL = callbackURL else {
-                        continuation.resume(throwing: GoogleAuthError.noCallback)
+                        self.authContinuation?.resume(throwing: GoogleAuthError.noCallback)
+                        self.authContinuation = nil
                         return
                     }
-                    let urlComponents = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false)!
-                    let authCode = urlComponents.queryItems?.first(where: { $0.name == "code" })?.value ?? ""
-                    if authCode.isEmpty {
-                        continuation.resume(throwing: GoogleAuthError.noCode)
+                    
+                    let components = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false)!
+                    let token = components.queryItems?.first(where: { $0.name == "token" })?.value
+                    let email = components.queryItems?.first(where: { $0.name == "email" })?.value
+                    let name = components.queryItems?.first(where: { $0.name == "name" })?.value
+                    let authError = components.queryItems?.first(where: { $0.name == "error" })?.value
+                    
+                    if let authError {
+                        self.authContinuation?.resume(throwing: GoogleAuthError.authFailed(authError))
+                        self.authContinuation = nil
                         return
                     }
-                    continuation.resume(returning: authCode)
+                    
+                    guard let token, let email else {
+                        self.authContinuation?.resume(throwing: GoogleAuthError.noToken)
+                        self.authContinuation = nil
+                        return
+                    }
+                    
+                    let authResponse = AuthManager.AuthResponse(
+                        token: token,
+                        user: AuthManager.User(
+                            id: "google-\(email)",
+                            email: email,
+                            name: name,
+                            plan: "starter",
+                            features: ["dashboard", "marketplace", "chat"]
+                        )
+                    )
+                    
+                    self.authContinuation?.resume(returning: authResponse)
+                    self.authContinuation = nil
                 }
             }
             session.prefersEphemeralWebBrowserSession = false
@@ -79,53 +97,19 @@ final class GoogleAuthManager: NSObject, ObservableObject {
             session.start()
         }
         
-        // Exchange code for tokens and get user info via backend
-        let userInfo = try await exchangeCodeForUserInfo(code)
-        
-        return AuthManager.AuthResponse(
-            token: "google_\(userInfo.id)",
-            user: AuthManager.User(
-                id: "google_\(userInfo.id)",
-                email: userInfo.email,
-                name: userInfo.name,
-                plan: "starter",
-                features: ["dashboard", "marketplace", "chat"]
-            )
-        )
-    }
-    
-    private func exchangeCodeForUserInfo(_ code: String) async throws -> GoogleUserInfo {
-        // Try backend first, fall back to direct Google API
-        do {
-            struct BackendRequest: Codable {
-                let code: String
-                let redirectUri: String
-            }
-            let body = BackendRequest(code: code, redirectUri: redirectUri)
-            let data = try await AuthManager.shared.authorizedRequest(
-                path: "/api/auth/google/exchange",
-                method: "POST",
-                body: body
-            )
-            return try JSONDecoder().decode(GoogleUserInfo.self, from: data)
-        } catch {
-            // Fallback: decode id_token to get user info
-            // The id_token is a JWT with user claims
-            let urlComponents = URLComponents(string: "https://oauth2.googleapis.com/tokeninfo?id_token=\(code)")!
-            let (tokenData, _) = try await URLSession.shared.data(from: urlComponents.url!)
-            let tokenInfo = try JSONDecoder().decode(GoogleUserInfo.self, from: tokenData)
-            return tokenInfo
-        }
+        return response
     }
     
     enum GoogleAuthError: LocalizedError {
         case noCallback
-        case noCode
+        case noToken
+        case authFailed(String)
         
         var errorDescription: String? {
             switch self {
             case .noCallback: return "Google sign-in was cancelled."
-            case .noCode: return "No authorization code received from Google."
+            case .noToken: return "No token received from Google."
+            case .authFailed(let msg): return "Google auth failed: \(msg)"
             }
         }
     }

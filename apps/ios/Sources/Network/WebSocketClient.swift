@@ -16,7 +16,7 @@ final class WebSocketClient: ObservableObject {
     var onConnect: (() -> Void)?
     
     private var baseURL: URL {
-        URL(string: "wss://agentbot-backend.fly.dev/ws")!
+        URL(string: "wss://agentbot-backend.fly.dev/ws/chat")!
     }
     
     func connect() {
