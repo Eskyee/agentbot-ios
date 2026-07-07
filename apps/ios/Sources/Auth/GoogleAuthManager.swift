@@ -48,7 +48,7 @@ final class GoogleAuthManager: NSObject, ObservableObject {
                         return
                     }
                     
-                    // Extract code from callback URL
+                    // Extract code from callback URL: agentbot://auth?code=xxx
                     let urlComponents = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false)!
                     let code = urlComponents.queryItems?.first(where: { $0.name == "code" })?.value ?? ""
                     
@@ -57,7 +57,7 @@ final class GoogleAuthManager: NSObject, ObservableObject {
                         return
                     }
                     
-                    // Mock login with Google code (backend exchange not ready yet)
+                    // Mock login with Google code
                     let mockResponse = AuthManager.AuthResponse(
                         token: "google_\(code.prefix(20))",
                         user: AuthManager.User(
@@ -72,7 +72,7 @@ final class GoogleAuthManager: NSObject, ObservableObject {
                     continuation.resume(returning: mockResponse)
                 }
             }
-            session.prefersEphemeralWebBrowserSession = true
+            session.prefersEphemeralWebBrowserSession = false
             session.presentationContextProvider = self
             self.webSession = session
             session.start()
