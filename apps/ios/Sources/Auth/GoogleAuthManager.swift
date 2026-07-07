@@ -13,8 +13,8 @@ final class GoogleAuthManager: NSObject, ObservableObject {
     // Your Google OAuth Client ID
     private let googleClientId = "444006121351-hl2ln0igvd9lm6p8l0679sff2trfuijs.apps.googleusercontent.com"
     
-    // iOS reverse client ID (for URL scheme)
-    private let reverseClientId = "com.googleusercontent.apps.444006121351-hl2ln0igvd9lm6p8l0679sff2trfuijs"
+    // Redirect to your website which will handle the callback
+    private let redirectUri = "https://agentbot.sh/api/auth/google/callback"
     
     func signIn() async throws -> AuthManager.AuthResponse {
         isAuthenticating = true
@@ -27,7 +27,7 @@ final class GoogleAuthManager: NSObject, ObservableObject {
         var components = URLComponents(string: "https://accounts.google.com/o/oauth2/v2/auth")!
         components.queryItems = [
             URLQueryItem(name: "client_id", value: googleClientId),
-            URLQueryItem(name: "redirect_uri", value: "\(reverseClientId):/"),
+            URLQueryItem(name: "redirect_uri", value: redirectUri),
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "scope", value: scopes),
             URLQueryItem(name: "state", value: state),
@@ -37,7 +37,7 @@ final class GoogleAuthManager: NSObject, ObservableObject {
         let authURL = components.url!
         
         return try await withCheckedThrowingContinuation { continuation in
-            let session = ASWebAuthenticationSession(url: authURL, callbackURLScheme: reverseClientId) { callbackURL, error in
+            let session = ASWebAuthenticationSession(url: authURL, callbackURLScheme: "agentbot") { callbackURL, error in
                 Task { @MainActor in
                     if let error = error {
                         continuation.resume(throwing: error)
@@ -48,7 +48,7 @@ final class GoogleAuthManager: NSObject, ObservableObject {
                         return
                     }
                     
-                    // Extract code from callback
+                    // Extract code from callback URL
                     let urlComponents = URLComponents(url: callbackURL, resolvingAgainstBaseURL: false)!
                     let code = urlComponents.queryItems?.first(where: { $0.name == "code" })?.value ?? ""
                     
@@ -57,8 +57,7 @@ final class GoogleAuthManager: NSObject, ObservableObject {
                         return
                     }
                     
-                    // For now, use the code as a mock token (backend exchange not ready)
-                    // In production, send code to your backend for token exchange
+                    // Mock login with Google code (backend exchange not ready yet)
                     let mockResponse = AuthManager.AuthResponse(
                         token: "google_\(code.prefix(20))",
                         user: AuthManager.User(
