@@ -11,7 +11,7 @@ final class GoogleAuthManager: NSObject, ObservableObject {
     private var webSession: ASWebAuthenticationSession?
     
     private let googleClientId = "444006121351-hl2ln0igvd9lm6p8l0679sff2trfuijs.apps.googleusercontent.com"
-    private let redirectUri = "https://agentbot.sh/auth/google/callback"
+    private let redirectUri = "https://agentbot.sh/api/auth/callback/google"
     
     struct GoogleTokenResponse: Codable {
         let access_token: String
