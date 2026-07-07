@@ -11,8 +11,8 @@ settings:
     ENABLE_APP_INTENTS_METADATA_GENERATION: NO
 
 packages:
-  OpenClawKit:
-    path: ../shared/OpenClawKit
+  AgentbotKit:
+    path: ../shared/AgentbotKit
   Swabble:
     path: ../swabble
   WebRTC:
@@ -66,11 +66,11 @@ targets:
       - target: AgentbotActivityWidget
         embed: true
       - target: AgentbotWatchApp
-      - package: OpenClawKit
-      - package: OpenClawKit
-        product: OpenClawChatUI
-      - package: OpenClawKit
-        product: OpenClawProtocol
+      - package: AgentbotKit
+      - package: AgentbotKit
+        product: AgentbotChatUI
+      - package: AgentbotKit
+        product: AgentbotProtocol
       - package: Swabble
         product: SwabbleKit
       - package: WebRTC
@@ -171,7 +171,7 @@ targets:
     sources:
       - path: ShareExtension
     dependencies:
-      - package: OpenClawKit
+      - package: AgentbotKit
       - sdk: AppIntents.framework
     settings:
       base:
@@ -317,7 +317,7 @@ targets:
     sources:
       - path: Tests/Logic
     dependencies:
-      - package: OpenClawKit
+      - package: AgentbotKit
     settings:
       base:
         CODE_SIGN_IDENTITY: "$(AGENTBOT_CODE_SIGN_IDENTITY)"

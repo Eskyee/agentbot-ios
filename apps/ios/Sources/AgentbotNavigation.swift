@@ -98,7 +98,7 @@ struct ChatListView: View {
                 )
             } else {
                 ForEach(conversations) { convo in
-                    NavigationLink(destination: StreamingChatView(conversationId: convo.id)) {
+                    NavigationLink(destination: StreamingChatView(conversationId: convo.id, conversationTitle: convo.title)) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(convo.title).font(.headline)
                             if let last = convo.lastMessage {
@@ -120,7 +120,7 @@ struct ChatListView: View {
         .navigationTitle("Agentbot")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                NavigationLink(destination: StreamingChatView(conversationId: "new")) {
+                NavigationLink(destination: StreamingChatView(conversationId: "new", conversationTitle: "New Chat")) {
                     Image(systemName: "square.and.pencil")
                 }
             }

@@ -2,12 +2,14 @@ import SwiftUI
 
 struct StreamingChatView: View {
     let conversationId: String
+    let conversationTitle: String
     @State private var messages: [ChatMessage] = []
     @State private var inputText = ""
     @State private var isStreaming = false
     @State private var streamingText = ""
     @State private var isConnected = false
     @StateObject private var ws = WebSocketClient.shared
+    @StateObject private var history = ChatHistoryManager.shared
     
     struct ChatMessage: Identifiable, Codable {
         let id: String
@@ -111,9 +113,10 @@ struct StreamingChatView: View {
             .padding(.horizontal)
             .padding(.vertical, 8)
         }
-        .navigationTitle("Chat")
+        .navigationTitle(conversationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
+            loadSavedMessages()
             setupWebSocket()
         }
         .onDisappear {
@@ -191,6 +194,7 @@ struct StreamingChatView: View {
                     isStreaming: false
                 )
                 messages.append(assistantMessage)
+                saveToHistory(role: "assistant", content: streamingText)
             }
             streamingText = ""
             isStreaming = false
@@ -206,6 +210,7 @@ struct StreamingChatView: View {
                     isStreaming: false
                 )
                 messages.append(message)
+                saveToHistory(role: role, content: content)
             }
             
         case "error":
@@ -224,6 +229,23 @@ struct StreamingChatView: View {
         }
     }
     
+    private func loadSavedMessages() {
+        let saved = history.loadMessages(for: conversationId)
+        messages = saved.map { ChatMessage(
+            id: $0.id,
+            role: $0.role,
+            content: $0.content,
+            timestamp: $0.timestamp,
+            isStreaming: false
+        )}
+    }
+
+    private func saveToHistory(role: String, content: String) {
+        let stored = ChatStoredMessage(role: role, content: content)
+        history.saveMessage(stored, to: conversationId)
+        history.updateConversation(conversationId, lastMessage: content)
+    }
+
     private func sendMessage() {
         let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { return }
@@ -236,6 +258,7 @@ struct StreamingChatView: View {
             isStreaming: nil
         )
         messages.append(userMessage)
+        saveToHistory(role: "user", content: text)
         inputText = ""
         isStreaming = true
         streamingText = ""

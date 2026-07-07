@@ -1,5 +1,5 @@
-import OpenClawKit
-import OpenClawProtocol
+import AgentbotKit
+import AgentbotProtocol
 import SwiftUI
 import UIKit
 
@@ -48,7 +48,7 @@ struct RootTabs: View {
 
     private static var initialTab: AppTab {
         let arguments = ProcessInfo.processInfo.arguments
-        guard let flagIndex = arguments.firstIndex(of: "--openclaw-initial-tab") else {
+        guard let flagIndex = arguments.firstIndex(of: "--agentbot-initial-tab") else {
             return .control
         }
         let valueIndex = arguments.index(after: flagIndex)
@@ -79,7 +79,7 @@ struct RootTabs: View {
 
     private static var requestedInitialSidebarDestination: SidebarDestination? {
         let arguments = ProcessInfo.processInfo.arguments
-        guard let flagIndex = arguments.firstIndex(of: "--openclaw-initial-destination") else {
+        guard let flagIndex = arguments.firstIndex(of: "--agentbot-initial-destination") else {
             return nil
         }
         let valueIndex = arguments.index(after: flagIndex)
@@ -94,7 +94,7 @@ struct RootTabs: View {
 
     private static var initialChatSessionKey: String? {
         let arguments = ProcessInfo.processInfo.arguments
-        guard let flagIndex = arguments.firstIndex(of: "--openclaw-chat-session") else {
+        guard let flagIndex = arguments.firstIndex(of: "--agentbot-chat-session") else {
             return nil
         }
         let valueIndex = arguments.index(after: flagIndex)
@@ -125,7 +125,7 @@ struct RootTabs: View {
             self.rootLifecycle(
                 self.rootOverlays(
                     self.tabContent
-                        .tint(OpenClawBrand.accent))))
+                        .tint(AgentbotBrand.accent))))
     }
 
     @ViewBuilder
@@ -147,7 +147,7 @@ struct RootTabs: View {
                 .badge(self.appModel.pendingExecApprovalPrompt == nil ? 0 : 1)
                 .tag(AppTab.control)
 
-            ChatProTab(openSettings: { self.selectSidebarDestination(.gateway) })
+            ChatHistoryView()
                 .tabItem { Label("Chat", systemImage: "bubble.left.fill") }
                 .tag(AppTab.chat)
 
@@ -212,7 +212,7 @@ struct RootTabs: View {
             self.sidebarDetailNavigationShell
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .background(OpenClawProBackground())
+        .background(AgentbotProBackground())
     }
 
     private func sidebarDrawerContent(sidebarWidth: CGFloat) -> some View {
@@ -266,11 +266,11 @@ struct RootTabs: View {
 
     private var sidebarIdentityHeader: some View {
         HStack(spacing: 10) {
-            OpenClawProMark(size: 30, shadowRadius: 3)
+            AgentbotProMark(size: 30, shadowRadius: 3)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("OpenClaw")
+                Text("Agentbot")
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(.primary)
                     .lineLimit(1)
@@ -299,7 +299,7 @@ struct RootTabs: View {
             self.sidebarHorizontalSeparator
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("OpenClaw \(self.sidebarGatewayStatusTitle)")
+        .accessibilityLabel("Agentbot \(self.sidebarGatewayStatusTitle)")
     }
 
     private var sidebarGatewayStatusTitle: String {
@@ -327,7 +327,7 @@ struct RootTabs: View {
             }
         }
         .listStyle(.sidebar)
-        .tint(OpenClawBrand.accent)
+        .tint(AgentbotBrand.accent)
         .scrollContentBackground(.hidden)
         .background(Color(uiColor: .systemBackground))
     }
@@ -340,7 +340,7 @@ struct RootTabs: View {
                     .font(.caption2.weight(.semibold))
                     .foregroundStyle(.secondary)
                 Spacer(minLength: 8)
-                Text("v\(DeviceInfoHelper.openClawVersionString())")
+                Text("v\(DeviceInfoHelper.agentbotVersionString())")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.primary)
                     .lineLimit(1)
@@ -367,11 +367,11 @@ struct RootTabs: View {
     private var sidebarGatewayStatusColor: Color {
         switch self.gatewayStatus {
         case .connected:
-            OpenClawBrand.ok
+            AgentbotBrand.ok
         case .connecting:
-            OpenClawBrand.accent
+            AgentbotBrand.accent
         case .error:
-            OpenClawBrand.warn
+            AgentbotBrand.warn
         case .disconnected:
             .secondary
         }
@@ -394,10 +394,10 @@ struct RootTabs: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .foregroundStyle(destination == self.selectedSidebarDestination ? OpenClawBrand.accent : .primary)
+        .foregroundStyle(destination == self.selectedSidebarDestination ? AgentbotBrand.accent : .primary)
         .listRowBackground(
             destination == self.selectedSidebarDestination
-                ? OpenClawBrand.accent.opacity(0.12)
+                ? AgentbotBrand.accent.opacity(0.12)
                 : Color.clear)
         .listRowSeparator(.hidden, edges: .all)
     }
@@ -406,13 +406,7 @@ struct RootTabs: View {
     private var sidebarDetail: some View {
         switch self.selectedSidebarDestination {
         case .chat:
-            ChatProTab(
-                headerLeadingAction: self.sidebarHeaderLeadingAction,
-                headerTitle: "Chat",
-                headerSubtitle: "Agent conversation",
-                showsAgentBadge: false,
-                ownsNavigationStack: false,
-                openSettings: { self.selectSidebarDestination(.gateway) })
+            ChatHistoryView()
         case .talk:
             TalkProTab(
                 headerLeadingAction: self.sidebarHeaderLeadingAction,
@@ -481,7 +475,7 @@ struct RootTabs: View {
                 openSettings: { self.selectSidebarDestination(.gateway) })
                 .id(self.selectedSidebarDestination.id)
         case .docs:
-            OpenClawDocsScreen(
+            AgentbotDocsScreen(
                 headerLeadingAction: self.sidebarHeaderLeadingAction,
                 gatewayAction: { self.selectSidebarDestination(.gateway) })
         case .settings:
@@ -550,7 +544,7 @@ struct RootTabs: View {
             layoutMode: self.isSidebarDrawerLayout ? .drawer : .split)
     }
 
-    private var sidebarHeaderLeadingAction: OpenClawSidebarHeaderAction? {
+    private var sidebarHeaderLeadingAction: AgentbotSidebarHeaderAction? {
         guard Self.shouldShowSidebarRevealInDestinationHeader(
             isSidebarVisible: self.isSidebarVisible,
             layoutMode: self.isSidebarDrawerLayout ? .drawer : .split)
@@ -558,13 +552,13 @@ struct RootTabs: View {
             return nil
         }
         if self.isSidebarVisible {
-            return OpenClawSidebarHeaderAction(
+            return AgentbotSidebarHeaderAction(
                 systemName: "sidebar.left",
                 accessibilityLabel: "Hide Sidebar",
                 accessibilityIdentifier: Self.sidebarHideButtonAccessibilityIdentifier,
                 action: { self.hideSidebar() })
         }
-        return OpenClawSidebarHeaderAction(
+        return AgentbotSidebarHeaderAction(
             systemName: "sidebar.left",
             accessibilityLabel: "Show Sidebar",
             accessibilityIdentifier: Self.sidebarShowButtonAccessibilityIdentifier,
@@ -581,7 +575,7 @@ struct RootTabs: View {
         .frame(width: 44, height: 44)
         .contentShape(Rectangle())
         .buttonStyle(.plain)
-        .foregroundStyle(OpenClawBrand.accent)
+        .foregroundStyle(AgentbotBrand.accent)
         .accessibilityLabel("Hide Sidebar")
         .accessibilityIdentifier(Self.sidebarHideButtonAccessibilityIdentifier)
     }
@@ -788,7 +782,7 @@ struct RootTabs: View {
                     GatewayQuickSetupSheet()
                         .environment(self.appModel)
                         .environment(self.gatewayController)
-                        .openClawSheetChrome()
+                        .agentbotSheetChrome()
                         .preferredColorScheme(self.appearancePreference.colorScheme)
                 }
             }
@@ -872,11 +866,11 @@ struct RootTabs: View {
                 "Use Chat for code work, Talk for realtime voice, and gateway tools for approved device actions.",
                 gatewayLabel: gatewayLabel,
                 activeAgentName: self.appModel.activeAgentName,
-                activeAgentBadge: agents.first(where: { $0.isActive })?.badge ?? "OC",
+                activeAgentBadge: agents.first(where: { $0.isActive })?.badge ?? "AB",
                 activeAgentCaption: "Routes chat and talk",
                 agentCount: agents.count,
                 agents: Array(agents.prefix(6)),
-                footer: "OpenClaw only runs phone-side capabilities while the app is connected and permitted.")
+                footer: "Agentbot only runs phone-side capabilities while the app is connected and permitted.")
         case .connecting:
             return RootTabsHomeCanvasPayload(
                 gatewayState: "connecting",
@@ -886,7 +880,7 @@ struct RootTabs: View {
                 "Restoring the local node session, agent list, voice config, and device capability state.",
                 gatewayLabel: gatewayLabel,
                 activeAgentName: self.appModel.activeAgentName,
-                activeAgentBadge: "OC",
+                activeAgentBadge: "AB",
                 activeAgentCaption: "Session in progress",
                 agentCount: agents.count,
                 agents: Array(agents.prefix(4)),
@@ -894,18 +888,18 @@ struct RootTabs: View {
         case .error, .disconnected:
             return RootTabsHomeCanvasPayload(
                 gatewayState: self.gatewayStatus == .error ? "error" : "offline",
-                eyebrow: self.gatewayStatus == .error ? "Gateway needs attention" : "OpenClaw iOS",
+                eyebrow: self.gatewayStatus == .error ? "Gateway needs attention" : "Agentbot",
                 title: "Pair a gateway",
                 subtitle:
                 "Connect this phone as a local node for chat, realtime voice, share intake, and approved device tools.",
                 gatewayLabel: gatewayLabel,
                 activeAgentName: "Main",
-                activeAgentBadge: "OC",
+                activeAgentBadge: "AB",
                 activeAgentCaption: "Connect to load your agents",
                 agentCount: agents.count,
                 agents: Array(agents.prefix(4)),
                 footer:
-                "Use Settings to scan a pairing QR code or paste a setup code from your OpenClaw gateway.")
+                "Use Settings to scan a pairing QR code or paste a setup code from your Agentbot gateway.")
         }
     }
 
@@ -1042,7 +1036,7 @@ extension RootTabs {
         if !initials.isEmpty {
             return initials.uppercased()
         }
-        return "OC"
+        return "AB"
     }
 
     private func normalized(_ value: String?) -> String? {
