@@ -575,12 +575,33 @@ extension SettingsProTab {
 
     var aboutDestination: some View {
         VStack(alignment: .leading, spacing: 14) {
-            self.detailStatusCard(
-                icon: "info.circle",
-                title: "OpenClaw",
-                detail: "iOS companion app",
-                value: DeviceInfoHelper.openClawVersionString(),
-                color: OpenClawBrand.accent)
+            ProCard(radius: SettingsLayout.cardRadius) {
+                VStack(spacing: 12) {
+                    Image("AgentbotIcon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 80, height: 80)
+                        .clipShape(RoundedRectangle(cornerRadius: 18))
+                    
+                    VStack(spacing: 4) {
+                        Text("AGENTBOT")
+                            .font(.title2.weight(.bold))
+                            .foregroundStyle(.primary)
+                        
+                        Text("AUTONOMOUS • INTELLIGENT • INFINITE")
+                            .font(.caption2.weight(.medium))
+                            .foregroundStyle(.tertiary)
+                            .tracking(0.3)
+                    }
+                    
+                    Text("iOS companion app")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+            }
+            .padding(.horizontal, OpenClawProMetric.pagePadding)
 
             self.detailListCard {
                 self.detailRow("Version", value: DeviceInfoHelper.openClawVersionString())
