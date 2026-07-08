@@ -628,6 +628,14 @@ extension SettingsProTab {
                     Link("github.com/Eskyee/agentbot-ios", destination: URL(string: "https://github.com/Eskyee/agentbot-ios")!)
                         .font(.callout)
                         .foregroundStyle(OpenClawBrand.accent)
+                    
+                    Divider()
+                    
+                    Text("Discord")
+                        .font(.subheadline.weight(.semibold))
+                    Link("discord.gg/vTPG4vdV6D", destination: URL(string: "https://discord.gg/vTPG4vdV6D")!)
+                        .font(.callout)
+                        .foregroundStyle(OpenClawBrand.accent)
                 }
             }
             .padding(.horizontal, OpenClawProMetric.pagePadding)
