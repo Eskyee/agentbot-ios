@@ -1,5 +1,5 @@
-import AgentbotKit
-import AgentbotProtocol
+import OpenClawKit
+import OpenClawProtocol
 import SwiftUI
 import UIKit
 
@@ -125,7 +125,7 @@ struct RootTabs: View {
             self.rootLifecycle(
                 self.rootOverlays(
                     self.tabContent
-                        .tint(AgentbotBrand.accent))))
+                        .tint(OpenClawBrand.accent))))
     }
 
     @ViewBuilder
@@ -147,7 +147,7 @@ struct RootTabs: View {
                 .badge(self.appModel.pendingExecApprovalPrompt == nil ? 0 : 1)
                 .tag(AppTab.control)
 
-            ChatHistoryView()
+            ChatProTab(openSettings: { self.selectSidebarDestination(.gateway) })
                 .tabItem { Label("Chat", systemImage: "bubble.left.fill") }
                 .tag(AppTab.chat)
 
@@ -212,7 +212,7 @@ struct RootTabs: View {
             self.sidebarDetailNavigationShell
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
-        .background(AgentbotProBackground())
+        .background(OpenClawProBackground())
     }
 
     private func sidebarDrawerContent(sidebarWidth: CGFloat) -> some View {
@@ -266,7 +266,7 @@ struct RootTabs: View {
 
     private var sidebarIdentityHeader: some View {
         HStack(spacing: 10) {
-            AgentbotProMark(size: 30, shadowRadius: 3)
+            OpenClawProMark(size: 30, shadowRadius: 3)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 2) {
@@ -274,6 +274,12 @@ struct RootTabs: View {
                     .font(.headline.weight(.semibold))
                     .foregroundStyle(.primary)
                     .lineLimit(1)
+
+                Text("AUTONOMOUS • INTELLIGENT • INFINITE")
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
+                    .tracking(0.3)
 
                 HStack(spacing: 4) {
                     Image(systemName: "circle.fill")
@@ -327,7 +333,7 @@ struct RootTabs: View {
             }
         }
         .listStyle(.sidebar)
-        .tint(AgentbotBrand.accent)
+        .tint(OpenClawBrand.accent)
         .scrollContentBackground(.hidden)
         .background(Color(uiColor: .systemBackground))
     }
@@ -340,7 +346,7 @@ struct RootTabs: View {
                     .font(.caption2.weight(.semibold))
                     .foregroundStyle(.secondary)
                 Spacer(minLength: 8)
-                Text("v\(DeviceInfoHelper.agentbotVersionString())")
+                Text("v\(DeviceInfoHelper.openClawVersionString())")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.primary)
                     .lineLimit(1)
@@ -367,11 +373,11 @@ struct RootTabs: View {
     private var sidebarGatewayStatusColor: Color {
         switch self.gatewayStatus {
         case .connected:
-            AgentbotBrand.ok
+            OpenClawBrand.ok
         case .connecting:
-            AgentbotBrand.accent
+            OpenClawBrand.accent
         case .error:
-            AgentbotBrand.warn
+            OpenClawBrand.warn
         case .disconnected:
             .secondary
         }
@@ -394,10 +400,10 @@ struct RootTabs: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .foregroundStyle(destination == self.selectedSidebarDestination ? AgentbotBrand.accent : .primary)
+        .foregroundStyle(destination == self.selectedSidebarDestination ? OpenClawBrand.accent : .primary)
         .listRowBackground(
             destination == self.selectedSidebarDestination
-                ? AgentbotBrand.accent.opacity(0.12)
+                ? OpenClawBrand.accent.opacity(0.12)
                 : Color.clear)
         .listRowSeparator(.hidden, edges: .all)
     }
@@ -406,7 +412,13 @@ struct RootTabs: View {
     private var sidebarDetail: some View {
         switch self.selectedSidebarDestination {
         case .chat:
-            ChatHistoryView()
+            ChatProTab(
+                headerLeadingAction: self.sidebarHeaderLeadingAction,
+                headerTitle: "Chat",
+                headerSubtitle: "Agent conversation",
+                showsAgentBadge: false,
+                ownsNavigationStack: false,
+                openSettings: { self.selectSidebarDestination(.gateway) })
         case .talk:
             TalkProTab(
                 headerLeadingAction: self.sidebarHeaderLeadingAction,
@@ -475,7 +487,7 @@ struct RootTabs: View {
                 openSettings: { self.selectSidebarDestination(.gateway) })
                 .id(self.selectedSidebarDestination.id)
         case .docs:
-            AgentbotDocsScreen(
+            OpenClawDocsScreen(
                 headerLeadingAction: self.sidebarHeaderLeadingAction,
                 gatewayAction: { self.selectSidebarDestination(.gateway) })
         case .settings:
@@ -544,7 +556,7 @@ struct RootTabs: View {
             layoutMode: self.isSidebarDrawerLayout ? .drawer : .split)
     }
 
-    private var sidebarHeaderLeadingAction: AgentbotSidebarHeaderAction? {
+    private var sidebarHeaderLeadingAction: OpenClawSidebarHeaderAction? {
         guard Self.shouldShowSidebarRevealInDestinationHeader(
             isSidebarVisible: self.isSidebarVisible,
             layoutMode: self.isSidebarDrawerLayout ? .drawer : .split)
@@ -552,13 +564,13 @@ struct RootTabs: View {
             return nil
         }
         if self.isSidebarVisible {
-            return AgentbotSidebarHeaderAction(
+            return OpenClawSidebarHeaderAction(
                 systemName: "sidebar.left",
                 accessibilityLabel: "Hide Sidebar",
                 accessibilityIdentifier: Self.sidebarHideButtonAccessibilityIdentifier,
                 action: { self.hideSidebar() })
         }
-        return AgentbotSidebarHeaderAction(
+        return OpenClawSidebarHeaderAction(
             systemName: "sidebar.left",
             accessibilityLabel: "Show Sidebar",
             accessibilityIdentifier: Self.sidebarShowButtonAccessibilityIdentifier,
@@ -575,7 +587,7 @@ struct RootTabs: View {
         .frame(width: 44, height: 44)
         .contentShape(Rectangle())
         .buttonStyle(.plain)
-        .foregroundStyle(AgentbotBrand.accent)
+        .foregroundStyle(OpenClawBrand.accent)
         .accessibilityLabel("Hide Sidebar")
         .accessibilityIdentifier(Self.sidebarHideButtonAccessibilityIdentifier)
     }
@@ -782,7 +794,7 @@ struct RootTabs: View {
                     GatewayQuickSetupSheet()
                         .environment(self.appModel)
                         .environment(self.gatewayController)
-                        .agentbotSheetChrome()
+                        .openClawSheetChrome()
                         .preferredColorScheme(self.appearancePreference.colorScheme)
                 }
             }
