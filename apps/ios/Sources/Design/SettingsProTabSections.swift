@@ -620,6 +620,14 @@ extension SettingsProTab {
                     Link("agentbot.sh", destination: URL(string: "https://agentbot.sh")!)
                         .font(.callout)
                         .foregroundStyle(OpenClawBrand.accent)
+                    
+                    Divider()
+                    
+                    Text("GitHub")
+                        .font(.subheadline.weight(.semibold))
+                    Link("github.com/Eskyee/agentbot-ios", destination: URL(string: "https://github.com/Eskyee/agentbot-ios")!)
+                        .font(.callout)
+                        .foregroundStyle(OpenClawBrand.accent)
                 }
             }
             .padding(.horizontal, OpenClawProMetric.pagePadding)
