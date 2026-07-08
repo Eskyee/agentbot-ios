@@ -612,6 +612,17 @@ extension SettingsProTab {
                 Divider()
                 self.detailRow("Model", value: DeviceInfoHelper.modelIdentifier())
             }
+
+            ProCard(radius: SettingsLayout.cardRadius) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Website")
+                        .font(.subheadline.weight(.semibold))
+                    Link("agentbot.sh", destination: URL(string: "https://agentbot.sh")!)
+                        .font(.callout)
+                        .foregroundStyle(OpenClawBrand.accent)
+                }
+            }
+            .padding(.horizontal, OpenClawProMetric.pagePadding)
         }
     }
 
